@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">EddyApp</string>
+    <string name="cambiar_red_wifi_a_movil">Cambiar de red Wifi a red Móvil</string>
+    <string name="cambiar_red_wifi">Cambiar de red Wifi</string>
+    <string name="configuracion_apn">Modificar configuración APN</string>
+    <string name="dispositivos_conectados">Ver dispositivos conectados</string>
+    <string name="estado_bateria">Verificar estado de la batería</string>
+</resources>
