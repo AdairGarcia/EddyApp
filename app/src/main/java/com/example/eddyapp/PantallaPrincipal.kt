@@ -16,6 +16,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -29,6 +33,14 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun PantallaPrincipal() {
+    var showChangeNetworkModeDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showTurnOffModule by remember {
+        mutableStateOf(false)
+    }
+
      Column (modifier = Modifier.fillMaxSize(),
      ) {
         Header()
@@ -40,15 +52,18 @@ fun PantallaPrincipal() {
              Row {
                  OptionBoton(
                      text = R.string.cambiar_red_wifi_a_movil,
-                     icon = R.drawable.cambiar_wifi
+                     icon = R.drawable.cambiar_wifi,
+                     function = { showChangeNetworkModeDialog = true }
                  )
                  OptionBoton(
                      text = R.string.apagar_modulo,
-                     icon = R.drawable.apagar
+                     icon = R.drawable.apagar,
+                     function = { showTurnOffModule = true }
                  )
                  OptionBoton(
                      text = R.string.cambiar_red_wifi,
-                     icon = R.drawable.cambiar_wifi
+                     icon = R.drawable.cambiar_wifi,
+                     function = { /*TODO*/ }
                  )
              }
              CenterPrincipal(
@@ -62,20 +77,37 @@ fun PantallaPrincipal() {
              Row {
                  OptionBoton(
                      text = R.string.configuracion_apn,
-                     icon = R.drawable.apn_symbol
+                     icon = R.drawable.apn_symbol,
+                     function = { /*TODO*/ }
                  )
                  OptionBoton(
                      text = R.string.dispositivos_conectados,
-                     icon = R.drawable.conected_devices
+                     icon = R.drawable.conected_devices,
+                     function = { /*TODO*/ }
                  )
                  OptionBoton(
                      text = R.string.estado_bateria,
-                     icon = R.drawable.battery_state
+                     icon = R.drawable.battery_state,
+                     function = { /*TODO*/ }
                  )
              }
          }
-
     }
+    /*Boton 1 Dialog*/
+    ChangeNetworkModeDialog(show = showChangeNetworkModeDialog,
+        onConfirm = { showChangeNetworkModeDialog = false }, /*LLAMAR A FUNCION PARA CAMBIAR REDES*/
+        onDismiss = { showChangeNetworkModeDialog = false },
+        title = R.string.cambiar_modo_conexion,
+        textConfirmation = R.string.cambiar
+        )
+
+    /*Boton 2 Dialog*/
+    ChangeNetworkModeDialog(show = showTurnOffModule,
+        onConfirm = { showTurnOffModule = false }, /*LLAMAR A FUNCION PARA APAGAR MODULO*/
+        onDismiss = { showTurnOffModule = false },
+        title = R.string.apagar_modulo_dialog,
+        textConfirmation = R.string.apagar
+        )
 }
 
 @Composable
@@ -124,6 +156,7 @@ fun CenterPrincipal(
 fun OptionBoton(
     @StringRes text: Int,
     @DrawableRes icon: Int,
+    function : () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(modifier = modifier.size(120.dp),
@@ -136,10 +169,11 @@ fun OptionBoton(
             modifier = Modifier.fillMaxWidth()
                 .padding(bottom = 5.dp),
             textAlign = TextAlign.Center,
-            minLines = 2
+            minLines = 2,
+            maxLines = 2
             )
         Button(
-            onClick = { /*TODO*/ },
+            onClick = function,
             colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
             shape = RoundedCornerShape(5.dp)
         ) {
@@ -149,15 +183,16 @@ fun OptionBoton(
             )
         }
     }
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun OptionBotonPreview() {
     OptionBoton(
         text = R.string.cambiar_red_wifi_a_movil,
-        icon = R.drawable.cambiar_wifi
+        icon = R.drawable.cambiar_wifi,
+        function = {  }
     )
 }
 

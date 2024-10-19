@@ -8,4 +8,9 @@
     <string name="estado_bateria">Verificar estado de la batería</string>
     <string name="network_name">SSID El rincon de la conexion</string>
     <string name="battery_level">Nivel de batería</string>
+
+    <string name="cambiar_modo_conexion">¿Cambiar modo de conexión?</string>
+    <string name="cambiar">Cambiar</string>
+    <string name="apagar_modulo_dialog">¿Apagar módulo Eddy?</string>
+    <string name="apagar">Apagar</string>
 </resources>
