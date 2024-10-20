@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun ChangeNetworkModeDialog(
+fun MultiDialog(
     show: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
@@ -30,7 +31,7 @@ fun ChangeNetworkModeDialog(
     ) {
     if(show) {
         Dialog(
-            onDismissRequest = onDismiss,
+            onDismissRequest = { onDismiss() },
 
         ) {
             Column(
@@ -46,19 +47,20 @@ fun ChangeNetworkModeDialog(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(vertical = 32.dp)
                 )
-                Button(onClick = onConfirm,
+                Button(onClick = { onConfirm() } ,
                     colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
                     shape = RoundedCornerShape(30.dp),
+                    modifier = Modifier.width(200.dp)
                 ) {
                     Text(text = stringResource(id = textConfirmation),
                         modifier = Modifier.padding(horizontal = 20.dp),
                         fontSize = 20.sp
                         )
                 }
-                Button(onClick = onDismiss,
+                Button(onClick = { onDismiss() },
                     colors = ButtonDefaults.buttonColors(Color(0xFF940101)),
                     shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier.padding(bottom = 16.dp, top = 7.dp)
+                    modifier = Modifier.padding(bottom = 16.dp, top = 7.dp).width(200.dp)
                     ) {
                     Text("Cancelar",
                         modifier = Modifier.padding(horizontal = 20.dp),
@@ -72,9 +74,9 @@ fun ChangeNetworkModeDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun ChangeNetworkModeDialogPreview() {
-    ChangeNetworkModeDialog(show = true, onConfirm = {}, onDismiss = {},
-        title = R.string.cambiar_modo_conexion,
-        textConfirmation = R.string.cambiar
+fun MultiDialogPreview() {
+    MultiDialog(show = true, onConfirm = {}, onDismiss = {},
+        title = R.string.apagar_modulo_dialog,
+        textConfirmation = R.string.apagar
         )
 }

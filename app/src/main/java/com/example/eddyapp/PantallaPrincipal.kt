@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,60 +42,64 @@ fun PantallaPrincipal() {
         mutableStateOf(false)
     }
 
-     Column (modifier = Modifier.fillMaxSize(),
-     ) {
-        Header()
-         Column (
-             modifier = Modifier.weight(1f),
-             horizontalAlignment = CenterHorizontally,
-             verticalArrangement = Arrangement.SpaceEvenly
-         ) {
-             Row {
-                 OptionBoton(
-                     text = R.string.cambiar_red_wifi_a_movil,
-                     icon = R.drawable.cambiar_wifi,
-                     function = { showChangeNetworkModeDialog = true }
-                 )
-                 OptionBoton(
-                     text = R.string.apagar_modulo,
-                     icon = R.drawable.apagar,
-                     function = { showTurnOffModule = true }
-                 )
-                 OptionBoton(
-                     text = R.string.cambiar_red_wifi,
-                     icon = R.drawable.cambiar_wifi,
-                     function = { /*TODO*/ }
-                 )
-             }
-             CenterPrincipal(
-                 mode = R.drawable.wifi_symbol,
-                 alexa = R.drawable.alexa,
-                 networkName = R.string.network_name,
-                 batteryLevel = R.string.battery_level,
-                 batteryModule = R.drawable.battery,
-                 modifier = Modifier
-             )
-             Row {
-                 OptionBoton(
-                     text = R.string.configuracion_apn,
-                     icon = R.drawable.apn_symbol,
-                     function = { /*TODO*/ }
-                 )
-                 OptionBoton(
-                     text = R.string.dispositivos_conectados,
-                     icon = R.drawable.conected_devices,
-                     function = { /*TODO*/ }
-                 )
-                 OptionBoton(
-                     text = R.string.estado_bateria,
-                     icon = R.drawable.battery_state,
-                     function = { /*TODO*/ }
-                 )
-             }
-         }
+    Scaffold(
+        topBar = {
+            Header()
+        }
+    ) { padding ->
+        Column (
+            modifier = Modifier.padding(padding).fillMaxSize(),
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Row {
+                OptionBoton(
+                    text = R.string.cambiar_red_wifi_a_movil,
+                    icon = R.drawable.cambiar_wifi,
+                    function = { showChangeNetworkModeDialog = true }
+                )
+                OptionBoton(
+                    text = R.string.apagar_modulo,
+                    icon = R.drawable.apagar,
+                    function = { showTurnOffModule = true }
+                )
+                OptionBoton(
+                    text = R.string.cambiar_red_wifi,
+                    icon = R.drawable.cambiar_wifi,
+                    function = { /*TODO*/ }
+                )
+            }
+            CenterPrincipal(
+                mode = R.drawable.wifi_symbol,
+                alexa = R.drawable.alexa,
+                networkName = R.string.network_name,
+                batteryLevel = R.string.battery_level,
+                batteryModule = R.drawable.battery,
+                modifier = Modifier
+            )
+            Row {
+                OptionBoton(
+                    text = R.string.configuracion_apn,
+                    icon = R.drawable.apn_symbol,
+                    function = { /*TODO*/ }
+                )
+                OptionBoton(
+                    text = R.string.dispositivos_conectados,
+                    icon = R.drawable.conected_devices,
+                    function = { /*TODO*/ }
+                )
+                OptionBoton(
+                    text = R.string.estado_bateria,
+                    icon = R.drawable.battery_state,
+                    function = { /*TODO*/ }
+                )
+            }
+        }
     }
+
+
     /*Boton 1 Dialog*/
-    ChangeNetworkModeDialog(show = showChangeNetworkModeDialog,
+    MultiDialog(show = showChangeNetworkModeDialog,
         onConfirm = { showChangeNetworkModeDialog = false }, /*LLAMAR A FUNCION PARA CAMBIAR REDES*/
         onDismiss = { showChangeNetworkModeDialog = false },
         title = R.string.cambiar_modo_conexion,
@@ -102,7 +107,7 @@ fun PantallaPrincipal() {
         )
 
     /*Boton 2 Dialog*/
-    ChangeNetworkModeDialog(show = showTurnOffModule,
+    MultiDialog(show = showTurnOffModule,
         onConfirm = { showTurnOffModule = false }, /*LLAMAR A FUNCION PARA APAGAR MODULO*/
         onDismiss = { showTurnOffModule = false },
         title = R.string.apagar_modulo_dialog,
@@ -173,7 +178,7 @@ fun OptionBoton(
             maxLines = 2
             )
         Button(
-            onClick = function,
+            onClick = { function() },
             colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
             shape = RoundedCornerShape(5.dp)
         ) {
