@@ -31,9 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun PantallaPrincipal() {
+fun PantallaPrincipal(navController: NavHostController) {
     var showChangeNetworkModeDialog by remember {
         mutableStateOf(false)
     }
@@ -52,7 +54,9 @@ fun PantallaPrincipal() {
             horizontalAlignment = CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Row {
+            Row (
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
                 OptionBoton(
                     text = R.string.cambiar_red_wifi_a_movil,
                     icon = R.drawable.cambiar_wifi,
@@ -66,7 +70,7 @@ fun PantallaPrincipal() {
                 OptionBoton(
                     text = R.string.cambiar_red_wifi,
                     icon = R.drawable.cambiar_wifi,
-                    function = { /*TODO*/ }
+                    function = { navController.navigate(ListaWifi.route) }
                 )
             }
             CenterPrincipal(
@@ -77,7 +81,9 @@ fun PantallaPrincipal() {
                 batteryModule = R.drawable.battery,
                 modifier = Modifier
             )
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
                 OptionBoton(
                     text = R.string.configuracion_apn,
                     icon = R.drawable.apn_symbol,
@@ -126,13 +132,15 @@ fun CenterPrincipal(
 ){
     Row (modifier = modifier.padding(25.dp).background(color = Color(0xFF77B9F2)),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Image(painterResource(id = alexa),
             contentDescription = "Alexa",
             modifier = modifier.padding(20.dp).size(120.dp),
         )
         Column (modifier = modifier,
-            horizontalAlignment = CenterHorizontally
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
             ) {
             Image(painterResource(id = mode),
                 contentDescription = "Network Mode",
@@ -204,7 +212,7 @@ fun OptionBotonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaPrincipalPreview() {
-    PantallaPrincipal()
+    PantallaPrincipal(navController = rememberNavController())
 }
 
 @Preview(showBackground = true)
