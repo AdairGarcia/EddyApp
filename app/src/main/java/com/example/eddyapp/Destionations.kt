@@ -11,3 +11,7 @@ object Home: Destinations {
 object ListaWifi: Destinations {
     override val route = "lista_wifi"
 }
+
+object ListaWifiFormulario: Destinations {
+    override val route = "lista_wifi_formulario"
+}

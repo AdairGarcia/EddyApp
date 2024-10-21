@@ -22,10 +22,24 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = Home.route){
             composable(Home.route){
-                PantallaPrincipal(navController)
+                PantallaPrincipal(
+                    onCambiarRedWifi = {
+                        navController.navigate(ListaWifi.route)
+                    }
+                )
             }
             composable(ListaWifi.route){
-                PantallaListaWifi()
+                PantallaListaWifi(
+                    onSeleccionaWifi = {
+                        navController.navigate(ListaWifiFormulario.route)
+                    }
+                )
+            }
+            composable(ListaWifiFormulario.route){
+                PantallaListaWifiFormulario(onCancel = {
+                    navController.navigate(Home.route)
+                },
+                    "Infinitum123")
             }
         }
     }

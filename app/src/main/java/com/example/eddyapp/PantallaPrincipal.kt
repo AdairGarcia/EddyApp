@@ -31,11 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun PantallaPrincipal(navController: NavHostController) {
+fun PantallaPrincipal(onCambiarRedWifi: () -> Unit) {
     var showChangeNetworkModeDialog by remember {
         mutableStateOf(false)
     }
@@ -70,7 +68,7 @@ fun PantallaPrincipal(navController: NavHostController) {
                 OptionBoton(
                     text = R.string.cambiar_red_wifi,
                     icon = R.drawable.cambiar_wifi,
-                    function = { navController.navigate(ListaWifi.route) }
+                    function = { onCambiarRedWifi() }
                 )
             }
             CenterPrincipal(
@@ -212,7 +210,7 @@ fun OptionBotonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaPrincipalPreview() {
-    PantallaPrincipal(navController = rememberNavController())
+    PantallaPrincipal {}
 }
 
 @Preview(showBackground = true)
