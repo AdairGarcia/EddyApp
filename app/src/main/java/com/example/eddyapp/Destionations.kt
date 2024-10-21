@@ -19,3 +19,7 @@ object ListaWifiFormulario: Destinations {
 object ModificarAPN: Destinations {
     override val route = "modificar-apn"
 }
+
+object VerDispositivos: Destinations {
+    override val route = "ver-dispositivos"
+}

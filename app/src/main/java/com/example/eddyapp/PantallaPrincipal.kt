@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
-                      onModificarAPN: () -> Unit
+                      onModificarAPN: () -> Unit,
+                      onVerDispositivos: () -> Unit
                       ) {
     var showChangeNetworkModeDialog by remember {
         mutableStateOf(false)
@@ -92,7 +93,7 @@ fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
                 OptionBoton(
                     text = R.string.dispositivos_conectados,
                     icon = R.drawable.conected_devices,
-                    function = { /*TODO*/ }
+                    function = { onVerDispositivos() }
                 )
                 OptionBoton(
                     text = R.string.estado_bateria,
@@ -212,7 +213,7 @@ fun OptionBotonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaPrincipalPreview() {
-    PantallaPrincipal ({},{})
+    PantallaPrincipal ({},{},{})
 }
 
 @Preview(showBackground = true)

@@ -28,6 +28,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onModificarAPN = {
                         navController.navigate(ModificarAPN.route)
+                    },
+                    onVerDispositivos = {
+                        navController.navigate(VerDispositivos.route)
                     }
                 )
             }
@@ -47,6 +50,13 @@ class MainActivity : ComponentActivity() {
             composable(ModificarAPN.route){
                 PantallaModificarAPN(
                     onCancel = {
+                        navController.navigate(Home.route)
+                    }
+                )
+            }
+            composable(VerDispositivos.route){
+                PantallaVerDispositivos(
+                    onEntendido = {
                         navController.navigate(Home.route)
                     }
                 )
