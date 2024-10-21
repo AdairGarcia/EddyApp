@@ -25,6 +25,9 @@ class MainActivity : ComponentActivity() {
                 PantallaPrincipal(
                     onCambiarRedWifi = {
                         navController.navigate(ListaWifi.route)
+                    },
+                    onModificarAPN = {
+                        navController.navigate(ModificarAPN.route)
                     }
                 )
             }
@@ -40,6 +43,13 @@ class MainActivity : ComponentActivity() {
                     navController.navigate(Home.route)
                 },
                     "Infinitum123")
+            }
+            composable(ModificarAPN.route){
+                PantallaModificarAPN(
+                    onCancel = {
+                        navController.navigate(Home.route)
+                    }
+                )
             }
         }
     }

@@ -15,3 +15,7 @@ object ListaWifi: Destinations {
 object ListaWifiFormulario: Destinations {
     override val route = "lista_wifi_formulario"
 }
+
+object ModificarAPN: Destinations {
+    override val route = "modificar-apn"
+}

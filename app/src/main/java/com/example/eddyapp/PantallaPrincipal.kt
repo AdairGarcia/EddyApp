@@ -33,7 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PantallaPrincipal(onCambiarRedWifi: () -> Unit) {
+fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
+                      onModificarAPN: () -> Unit
+                      ) {
     var showChangeNetworkModeDialog by remember {
         mutableStateOf(false)
     }
@@ -85,7 +87,7 @@ fun PantallaPrincipal(onCambiarRedWifi: () -> Unit) {
                 OptionBoton(
                     text = R.string.configuracion_apn,
                     icon = R.drawable.apn_symbol,
-                    function = { /*TODO*/ }
+                    function = { onModificarAPN() }
                 )
                 OptionBoton(
                     text = R.string.dispositivos_conectados,
@@ -210,7 +212,7 @@ fun OptionBotonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaPrincipalPreview() {
-    PantallaPrincipal {}
+    PantallaPrincipal ({},{})
 }
 
 @Preview(showBackground = true)

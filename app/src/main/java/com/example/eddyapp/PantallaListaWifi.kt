@@ -57,7 +57,6 @@ fun PantallaListaWifi(
             ContenedorWifi("Infinitum777", true, onSeleccionaWifi)
             ContenedorWifi("Infinitum888", true, onSeleccionaWifi)
             ContenedorWifi("Infinitum999", true, onSeleccionaWifi)
-
         }
     }
 }
