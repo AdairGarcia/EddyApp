@@ -31,6 +31,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onVerDispositivos = {
                         navController.navigate(VerDispositivos.route)
+                    },
+                    onVerBateria = {
+                        navController.navigate(VerBateria.route)
                     }
                 )
             }
@@ -56,6 +59,15 @@ class MainActivity : ComponentActivity() {
             }
             composable(VerDispositivos.route){
                 PantallaVerDispositivos(
+                    onEntendido = {
+                        navController.navigate(Home.route)
+                    }
+                )
+            }
+            composable(VerBateria.route){
+                PantallaVerBateria(
+                    bateria = R.drawable.battery_quarter_solid,
+                    cargaRestante = "100%",
                     onEntendido = {
                         navController.navigate(Home.route)
                     }

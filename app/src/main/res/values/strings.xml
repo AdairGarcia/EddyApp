@@ -5,7 +5,7 @@
     <string name="cambiar_red_wifi">Cambiar de red Wifi</string>
     <string name="configuracion_apn">Modificar configuración APN</string>
     <string name="dispositivos_conectados">Ver dispositivos conectados</string>
-    <string name="estado_bateria">Verificar estado de la batería</string>
+    <string name="estado_bateria">Ver estado de la batería</string>
     <string name="network_name">SSID El rincon de la conexion</string>
     <string name="battery_level">Nivel de batería</string>
 

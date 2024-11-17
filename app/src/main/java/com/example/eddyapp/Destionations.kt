@@ -23,3 +23,7 @@ object ModificarAPN: Destinations {
 object VerDispositivos: Destinations {
     override val route = "ver-dispositivos"
 }
+
+object VerBateria: Destinations {
+    override val route = "ver-bateria"
+}
