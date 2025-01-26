@@ -1,4 +1,4 @@
-package com.example.eddyapp
+package com.example.eddyapp.presentation.navigation
 
 interface Destinations {
     val route: String

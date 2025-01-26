@@ -1,4 +1,4 @@
-package com.example.eddyapp
+package com.example.eddyapp.presentation.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.eddyapp.R
 
 @Composable
 fun MultiDialog(

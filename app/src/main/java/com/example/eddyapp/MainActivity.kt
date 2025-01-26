@@ -7,6 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.eddyapp.presentation.navigation.Home
+import com.example.eddyapp.presentation.navigation.ListaWifi
+import com.example.eddyapp.presentation.navigation.ListaWifiFormulario
+import com.example.eddyapp.presentation.navigation.ModificarAPN
+import com.example.eddyapp.presentation.navigation.VerBateria
+import com.example.eddyapp.presentation.navigation.VerDispositivos
+import com.example.eddyapp.presentation.ui.PantallaListaWifi
+import com.example.eddyapp.presentation.ui.PantallaListaWifiFormulario
+import com.example.eddyapp.presentation.ui.PantallaModificarAPN
+import com.example.eddyapp.presentation.ui.PantallaPrincipal
+import com.example.eddyapp.presentation.ui.PantallaVerBateria
+import com.example.eddyapp.presentation.ui.PantallaVerDispositivos
 
 
 class MainActivity : ComponentActivity() {

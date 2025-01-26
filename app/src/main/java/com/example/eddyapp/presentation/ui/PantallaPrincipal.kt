@@ -1,4 +1,4 @@
-package com.example.eddyapp
+package com.example.eddyapp.presentation.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.eddyapp.R
+import com.example.eddyapp.data.api.shutdown
 
 @Composable
 fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
@@ -116,7 +118,10 @@ fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
 
     /*Boton 2 Dialog*/
     MultiDialog(show = showTurnOffModule,
-        onConfirm = { showTurnOffModule = false }, /*LLAMAR A FUNCION PARA APAGAR MODULO*/
+        onConfirm = {
+            shutdown()
+            showTurnOffModule = false
+        },
         onDismiss = { showTurnOffModule = false },
         title = R.string.apagar_modulo_dialog,
         textConfirmation = R.string.apagar

@@ -1,4 +1,4 @@
-package com.example.eddyapp
+package com.example.eddyapp.presentation.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
