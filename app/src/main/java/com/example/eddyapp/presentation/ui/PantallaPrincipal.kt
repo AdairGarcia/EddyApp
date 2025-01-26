@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
+import com.example.eddyapp.data.api.getConectedClients
 import com.example.eddyapp.data.api.shutdown
 
 @Composable
@@ -96,7 +97,10 @@ fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
                 OptionBoton(
                     text = R.string.dispositivos_conectados,
                     icon = R.drawable.conected_devices,
-                    function = { onVerDispositivos() }
+                    function = {
+                        getConectedClients()
+                        onVerDispositivos()
+                    }
                 )
                 OptionBoton(
                     text = R.string.estado_bateria,

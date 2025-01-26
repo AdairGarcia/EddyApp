@@ -21,3 +21,19 @@ fun shutdown(){
         }
     })
 }
+
+fun getConectedClients(){
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    apiService.getConectedClients().enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if(response.isSuccessful){
+                val body = response.body()
+                Log.d("RESPONSE", body.toString())
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable){
+            Log.e("ERROR", t.message.toString())
+        }
+    })
+}

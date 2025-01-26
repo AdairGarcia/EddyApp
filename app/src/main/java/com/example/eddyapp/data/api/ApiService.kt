@@ -7,4 +7,7 @@ import retrofit2.http.GET
 interface ApiService {
     @GET("shutdown")
     fun getShutdown(): Call<ApiResponse>
+
+    @GET("conected-clients")
+    fun getConectedClients(): Call<ApiResponse>
 }
