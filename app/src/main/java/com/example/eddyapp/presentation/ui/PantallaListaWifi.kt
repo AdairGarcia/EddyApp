@@ -16,6 +16,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,11 +30,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
+import com.example.eddyapp.data.api.getWifiList
+import com.example.eddyapp.data.model.WifiNetwork
 
 @Composable
 fun PantallaListaWifi(
-    onSeleccionaWifi: () -> Unit = {}
+    onSeleccionaWifi: (WifiNetwork) -> Unit = {}
 ) {
+    val wifiNetworks = remember { mutableStateListOf<WifiNetwork>() }
+
+    LaunchedEffect(Unit) {
+        // Call to the API to get the list of available Wi-Fi networks
+        getWifiList { networks ->
+            wifiNetworks.clear()
+            wifiNetworks.addAll(networks)
+        }
+    }
+
     Scaffold (
         topBar = {
             Header()
@@ -50,28 +65,22 @@ fun PantallaListaWifi(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
                 )
-            ContenedorWifi("Infinitum123", false, onSeleccionaWifi)
-            ContenedorWifi("Infinitum321", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum789", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum444", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum555", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum666", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum777", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum888", true, onSeleccionaWifi)
-            ContenedorWifi("Infinitum999", true, onSeleccionaWifi)
+
+            wifiNetworks.forEach { network ->
+                ContenedorWifi(network, onSeleccionaWifi)
+            }
         }
     }
 }
 
 @Composable
 fun ContenedorWifi(
-    nombreRed: String,
-    privada: Boolean,
-    function: () -> Unit = {}
+    network: WifiNetwork,
+    function: (WifiNetwork) -> Unit
 ){
     Button(
         onClick = {
-            function()
+            function(network)
         },
         colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
         shape = RoundedCornerShape(20.dp),
@@ -87,7 +96,7 @@ fun ContenedorWifi(
                 contentDescription = "Icono de Wifi",
                 modifier = Modifier.size(50.dp)
             )
-            Text(text = nombreRed,
+            Text(text = network.ssid,
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
@@ -96,7 +105,7 @@ fun ContenedorWifi(
                 painter = painterResource(id = R.drawable.locked),
                 contentDescription = "Icono de red privada",
                 modifier = Modifier.size(35.dp),
-                alpha = if(privada) 1f else 0f
+                alpha = if(network.security != "") 1f else 0f
             )
 
         }
@@ -113,5 +122,5 @@ fun PantallaListaWifiPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ContenedorWifiPreview() {
-    ContenedorWifi("Infinitum123", true)
+    ContenedorWifi(WifiNetwork("Infinitum123", 100, "WPA2")) {}
 }

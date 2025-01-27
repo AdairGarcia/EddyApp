@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
+import com.example.eddyapp.data.model.WifiNetwork
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,17 +41,20 @@ fun getConectedClients(){
     })
 }
 
-fun getWifiList(){
+fun getWifiList(onResult: (List<WifiNetwork>) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getWifiList().enqueue(object : Callback<WifiListResponse> {
         override fun onResponse(call: Call<WifiListResponse>, response: Response<WifiListResponse>) {
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                Log.d("RESPONSE WIFI LIST", body.toString())
+                body?.let {
+                    onResult(it.message)
+                }
+
             }
         }
 
-        override fun onFailure(call: Call<WifiListResponse>, t: Throwable){
+        override fun onFailure(call: Call<WifiListResponse>, t: Throwable) {
             Log.e("ERROR", t.message.toString())
         }
     })

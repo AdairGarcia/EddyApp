@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.getConectedClients
-import com.example.eddyapp.data.api.getWifiList
 import com.example.eddyapp.data.api.shutdown
 
 @Composable
@@ -77,7 +76,6 @@ fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
                     text = R.string.cambiar_red_wifi,
                     icon = R.drawable.cambiar_wifi,
                     function = {
-                        getWifiList()
                         onCambiarRedWifi()
                     }
                 )
