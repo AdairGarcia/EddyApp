@@ -13,12 +13,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,13 +42,24 @@ fun PantallaListaWifi(
     onSeleccionaWifi: (String) -> Unit = {}
 ) {
     val wifiNetworks = remember { mutableStateListOf<WifiNetwork>() }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        // Call to the API to get the list of available Wi-Fi networks
-        getWifiList { networks ->
-            wifiNetworks.clear()
-            wifiNetworks.addAll(networks)
-        }
+        // Call the API to get the list of wifi networks
+        getWifiList(
+            onResult = { networks ->
+                wifiNetworks.clear()
+                wifiNetworks.addAll(networks)
+                errorMessage = null
+                isLoading = false
+            },
+            onError = { error ->
+                wifiNetworks.clear()
+                errorMessage = error
+                isLoading = false
+            }
+        )
     }
 
     Scaffold (
@@ -66,9 +81,23 @@ fun PantallaListaWifi(
                 modifier = Modifier.padding(vertical = 32.dp)
                 )
 
-            wifiNetworks.forEach { network ->
-                ContenedorWifi(network) { selectedNetwork ->
-                    onSeleccionaWifi(selectedNetwork.ssid)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                wifiNetworks.forEach { network ->
+                    ContenedorWifi(network) { selectedNetwork ->
+                        onSeleccionaWifi(selectedNetwork.ssid)
+                    }
                 }
             }
         }

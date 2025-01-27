@@ -41,21 +41,27 @@ fun getConectedClients(){
     })
 }
 
-fun getWifiList(onResult: (List<WifiNetwork>) -> Unit) {
+fun getWifiList(onResult: (List<WifiNetwork>) -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getWifiList().enqueue(object : Callback<WifiListResponse> {
         override fun onResponse(call: Call<WifiListResponse>, response: Response<WifiListResponse>) {
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    onResult(it.message)
-                }
-
+                    if (it.message.isEmpty()) {
+                        onError("No se encontraron redes Wi-Fi disponibles")
+                    } else {
+                        onResult(it.message)
+                    }
+                } ?: onError("No se encontraron redes Wi-Fi disponibles")
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
             }
         }
 
         override fun onFailure(call: Call<WifiListResponse>, t: Throwable) {
-            Log.e("ERROR", t.message.toString())
+            onError("Hubo un error en la petición a Eddy: ${t.message}")
         }
     })
 }
