@@ -57,7 +57,9 @@ class MainActivity : ComponentActivity() {
             composable("${ListaWifiFormulario.route}/{networkName}") { backStackEntry ->
                 val networkName = backStackEntry.arguments?.getString("networkName") ?: ""
                 PantallaListaWifiFormulario(onCancel = {
-                    navController.navigate(Home.route)
+                    navController.navigate(Home.route) {
+                        popUpTo(Home.route) { inclusive = true }
+                    }
                 }, nombreRed = networkName)
             }
 
