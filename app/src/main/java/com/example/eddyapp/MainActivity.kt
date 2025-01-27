@@ -49,13 +49,18 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-            composable(ListaWifi.route){
-                PantallaListaWifi(
-                    onSeleccionaWifi = {
-                        navController.navigate(ListaWifiFormulario.route)
-                    }
-                )
+            composable(ListaWifi.route) {
+                PantallaListaWifi { selectedNetworkName ->
+                    navController.navigate("${ListaWifiFormulario.route}/$selectedNetworkName")
+                }
             }
+            composable("${ListaWifiFormulario.route}/{networkName}") { backStackEntry ->
+                val networkName = backStackEntry.arguments?.getString("networkName") ?: ""
+                PantallaListaWifiFormulario(onCancel = {
+                    navController.navigate(Home.route)
+                }, nombreRed = networkName)
+            }
+
             composable(ListaWifiFormulario.route){
                 PantallaListaWifiFormulario(onCancel = {
                     navController.navigate(Home.route)

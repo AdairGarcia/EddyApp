@@ -35,7 +35,7 @@ import com.example.eddyapp.data.model.WifiNetwork
 
 @Composable
 fun PantallaListaWifi(
-    onSeleccionaWifi: (WifiNetwork) -> Unit = {}
+    onSeleccionaWifi: (String) -> Unit = {}
 ) {
     val wifiNetworks = remember { mutableStateListOf<WifiNetwork>() }
 
@@ -67,7 +67,9 @@ fun PantallaListaWifi(
                 )
 
             wifiNetworks.forEach { network ->
-                ContenedorWifi(network, onSeleccionaWifi)
+                ContenedorWifi(network) { selectedNetwork ->
+                    onSeleccionaWifi(selectedNetwork.ssid)
+                }
             }
         }
     }

@@ -58,7 +58,7 @@ fun PantallaListaWifiFormulario(
                 label = { Text(text = "Nombre de la red") },
                 modifier = Modifier.padding(10.dp),
                 readOnly = true,
-                onValueChange = {/* TODO */}
+                onValueChange = {/* No-op */}
             )
             OutlinedTextField(
                 value = contrasena,
