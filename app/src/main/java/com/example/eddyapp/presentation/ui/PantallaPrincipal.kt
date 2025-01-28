@@ -102,7 +102,6 @@ fun PantallaPrincipal(
                         text = R.string.dispositivos_conectados,
                         icon = R.drawable.conected_devices,
                         function = {
-                            getConectedClients()
                             onVerDispositivos()
                         },
                         enabled = !isLoading

@@ -2,6 +2,8 @@ package com.example.eddyapp.data.api
 
 import android.util.Log
 import com.example.eddyapp.data.model.ApiResponse
+import com.example.eddyapp.data.model.Client
+import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
 import com.example.eddyapp.data.model.WifiNetwork
@@ -34,18 +36,27 @@ fun shutdown(onSuccess: () -> Unit, onError: (String) -> Unit) {
     })
 }
 
-fun getConectedClients(){
+fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Unit){
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
-    apiService.getConectedClients().enqueue(object: Callback<ApiResponse> {
-        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+    apiService.getConectedClients().enqueue(object: Callback<ClientListResponse> {
+        override fun onResponse(call: Call<ClientListResponse>, response: Response<ClientListResponse>) {
             if(response.isSuccessful){
                 val body = response.body()
-                Log.d("RESPONSE GET CONNECTED CLIENTS", body.toString())
+                body?.let {
+                    if (it.clients.isEmpty()){
+                        onError("No se encontraron dispositivos conectados")
+                    } else {
+                        onResult(it.clients)
+                    }
+                } ?: onError("No se encontraron dispositivos conectados")
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
             }
         }
 
-        override fun onFailure(call: Call<ApiResponse>, t: Throwable){
-            Log.e("ERROR", t.message.toString())
+        override fun onFailure(call: Call<ClientListResponse>, t: Throwable){
+            onError("Hubo un error en la petición a Eddy: ${t.message}")
         }
     })
 }

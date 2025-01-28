@@ -79,7 +79,9 @@ class MainActivity : ComponentActivity() {
             composable(VerDispositivos.route){
                 PantallaVerDispositivos(
                     onEntendido = {
-                        navController.navigate(Home.route)
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
                     }
                 )
             }

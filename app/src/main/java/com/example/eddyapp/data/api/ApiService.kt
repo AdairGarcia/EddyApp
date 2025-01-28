@@ -1,6 +1,7 @@
 package com.example.eddyapp.data.api
 
 import com.example.eddyapp.data.model.ApiResponse
+import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
 import retrofit2.Call
@@ -12,8 +13,8 @@ interface ApiService {
     @GET("shutdown")
     fun getShutdown(): Call<ApiResponse>
 
-    @GET("conected-clients")
-    fun getConectedClients(): Call<ApiResponse>
+    @GET("connected-clients")
+    fun getConectedClients(): Call<ClientListResponse>
 
     @GET("wifi-list")
     fun getWifiList(): Call<WifiListResponse>
