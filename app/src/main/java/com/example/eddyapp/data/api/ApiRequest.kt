@@ -9,18 +9,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-fun shutdown(){
+fun shutdown(onSuccess: () -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getShutdown().enqueue(object: Callback<ApiResponse> {
         override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                Log.d("RESPONSE SHUTDOWN", body.toString())
+                if (body?.status == "error") {
+                    onError("Error al apagar: ${body.message}")
+                } else {
+                    Log.d("RESPONSE SHUTDOWN", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error al apagar: ${response.code()} - ${errorBody ?: "Error desconocido"}")
             }
         }
 
-        override fun onFailure(call: Call<ApiResponse>, t: Throwable){
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
             Log.e("ERROR", t.message.toString())
+            onError("Error al apagar: ${t.message}")
         }
     })
 }

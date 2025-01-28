@@ -1,10 +1,12 @@
 package com.example.eddyapp.presentation.ui
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,102 +40,122 @@ import com.example.eddyapp.data.api.getConectedClients
 import com.example.eddyapp.data.api.shutdown
 
 @Composable
-fun PantallaPrincipal(onCambiarRedWifi: () -> Unit,
-                      onModificarAPN: () -> Unit,
-                      onVerDispositivos: () -> Unit,
-                      onVerBateria: () -> Unit
-                      ) {
-    var showChangeNetworkModeDialog by remember {
-        mutableStateOf(false)
-    }
+fun PantallaPrincipal(
+    onCambiarRedWifi: () -> Unit,
+    onModificarAPN: () -> Unit,
+    onVerDispositivos: () -> Unit,
+    onVerBateria: () -> Unit
+) {
+    val context = LocalContext.current
 
-    var showTurnOffModule by remember {
-        mutableStateOf(false)
-    }
+    var showChangeNetworkModeDialog by remember { mutableStateOf(false) }
+    var showTurnOffModule by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             Header()
         }
     ) { padding ->
-        Column (
-            modifier = Modifier.padding(padding).fillMaxSize(),
-            horizontalAlignment = CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Row (
-                horizontalArrangement = Arrangement.SpaceEvenly,
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.padding(padding).fillMaxSize(),
+                horizontalAlignment = CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                OptionBoton(
-                    text = R.string.cambiar_red_wifi_a_movil,
-                    icon = R.drawable.cambiar_wifi,
-                    function = { showChangeNetworkModeDialog = true }
+                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                    OptionBoton(
+                        text = R.string.cambiar_red_wifi_a_movil,
+                        icon = R.drawable.cambiar_wifi,
+                        function = { showChangeNetworkModeDialog = true },
+                        enabled = !isLoading
+                    )
+                    OptionBoton(
+                        text = R.string.apagar_modulo,
+                        icon = R.drawable.apagar,
+                        function = { showTurnOffModule = true },
+                        enabled = !isLoading
+                    )
+                    OptionBoton(
+                        text = R.string.cambiar_red_wifi,
+                        icon = R.drawable.cambiar_wifi,
+                        function = { onCambiarRedWifi() },
+                        enabled = !isLoading
+                    )
+                }
+                CenterPrincipal(
+                    mode = R.drawable.wifi_symbol,
+                    alexa = R.drawable.alexa,
+                    networkName = R.string.network_name,
+                    batteryLevel = R.string.battery_level,
+                    batteryModule = R.drawable.battery,
+                    modifier = Modifier
                 )
-                OptionBoton(
-                    text = R.string.apagar_modulo,
-                    icon = R.drawable.apagar,
-                    function = { showTurnOffModule = true }
-                )
-                OptionBoton(
-                    text = R.string.cambiar_red_wifi,
-                    icon = R.drawable.cambiar_wifi,
-                    function = {
-                        onCambiarRedWifi()
-                    }
-                )
+                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                    OptionBoton(
+                        text = R.string.configuracion_apn,
+                        icon = R.drawable.apn_symbol,
+                        function = { onModificarAPN() },
+                        enabled = !isLoading
+                    )
+                    OptionBoton(
+                        text = R.string.dispositivos_conectados,
+                        icon = R.drawable.conected_devices,
+                        function = {
+                            getConectedClients()
+                            onVerDispositivos()
+                        },
+                        enabled = !isLoading
+                    )
+                    OptionBoton(
+                        text = R.string.estado_bateria,
+                        icon = R.drawable.battery_state,
+                        function = { onVerBateria() },
+                        enabled = !isLoading
+                    )
+                }
             }
-            CenterPrincipal(
-                mode = R.drawable.wifi_symbol,
-                alexa = R.drawable.alexa,
-                networkName = R.string.network_name,
-                batteryLevel = R.string.battery_level,
-                batteryModule = R.drawable.battery,
-                modifier = Modifier
-            )
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                OptionBoton(
-                    text = R.string.configuracion_apn,
-                    icon = R.drawable.apn_symbol,
-                    function = { onModificarAPN() }
-                )
-                OptionBoton(
-                    text = R.string.dispositivos_conectados,
-                    icon = R.drawable.conected_devices,
-                    function = {
-                        getConectedClients()
-                        onVerDispositivos()
-                    }
-                )
-                OptionBoton(
-                    text = R.string.estado_bateria,
-                    icon = R.drawable.battery_state,
-                    function = { onVerBateria() }
-                )
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Gray.copy(alpha = 0.5f))
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }
 
-
-    /*Boton 1 Dialog*/
-    MultiDialog(show = showChangeNetworkModeDialog,
-        onConfirm = { showChangeNetworkModeDialog = false }, /*LLAMAR A FUNCION PARA CAMBIAR REDES*/
+    MultiDialog(
+        show = showChangeNetworkModeDialog,
+        onConfirm = { showChangeNetworkModeDialog = false },
         onDismiss = { showChangeNetworkModeDialog = false },
         title = R.string.cambiar_modo_conexion,
         textConfirmation = R.string.cambiar
-        )
+    )
 
-    /*Boton 2 Dialog*/
-    MultiDialog(show = showTurnOffModule,
+    MultiDialog(
+        show = showTurnOffModule,
         onConfirm = {
-            shutdown()
+            isLoading = true
+            shutdown(
+                onSuccess = {
+                    isLoading = false
+                    Toast.makeText(context, "Módulo apagado exitosamente", Toast.LENGTH_SHORT).show()
+                },
+                onError = { errorMessage ->
+                    isLoading = false
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
             showTurnOffModule = false
         },
         onDismiss = { showTurnOffModule = false },
         title = R.string.apagar_modulo_dialog,
         textConfirmation = R.string.apagar
-        )
+    )
 }
 
 @Composable
@@ -183,7 +207,8 @@ fun OptionBoton(
     @StringRes text: Int,
     @DrawableRes icon: Int,
     function : () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ){
     Column(modifier = modifier.size(120.dp),
         horizontalAlignment = CenterHorizontally,
@@ -201,7 +226,8 @@ fun OptionBoton(
         Button(
             onClick = { function() },
             colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
-            shape = RoundedCornerShape(5.dp)
+            shape = RoundedCornerShape(5.dp),
+            enabled = enabled,
         ) {
             Image(painterResource(id = icon),
                 contentDescription = "Action Icon",
