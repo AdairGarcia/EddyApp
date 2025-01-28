@@ -66,19 +66,28 @@ fun getWifiList(onResult: (List<WifiNetwork>) -> Unit, onError: (String) -> Unit
     })
 }
 
-fun wifiConnection(ssid: String, password: String) {
+fun wifiConnection(ssid: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     val request = WifiConnectionRequest(ssid, password)
     apiService.wifiConnection(request).enqueue(object: Callback<ApiResponse> {
         override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                Log.d("RESPONSE WIFI CONNECTION", body.toString())
+                if (body?.status == "error") {
+                    onError("Error en la conexión: ${body.message}")
+                } else {
+                    Log.d("RESPONSE WIFI CONNECTION", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error en la conexión: ${response.code()} - ${errorBody ?: "Error desconocido"}")
             }
         }
 
-        override fun onFailure(call: Call<ApiResponse>, t: Throwable){
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
             Log.e("ERROR", t.message.toString())
+            onError("Error en la conexión: ${t.message}")
         }
     })
 }

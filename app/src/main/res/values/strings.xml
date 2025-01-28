@@ -14,4 +14,6 @@
     <string name="apagar_modulo_dialog">¿Apagar módulo Eddy?</string>
     <string name="apagar">Apagar</string>
 
+    <string name="show_password">Mostrar contraseña</string>
+
 </resources>

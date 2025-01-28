@@ -60,15 +60,15 @@ class MainActivity : ComponentActivity() {
                     navController.navigate(Home.route) {
                         popUpTo(Home.route) { inclusive = true }
                     }
-                }, nombreRed = networkName)
+                }, nombreRed = networkName,
+                    onSuccess = {
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
+                    }
+                )
             }
 
-            composable(ListaWifiFormulario.route){
-                PantallaListaWifiFormulario(onCancel = {
-                    navController.navigate(Home.route)
-                },
-                    "Infinitum123")
-            }
             composable(ModificarAPN.route){
                 PantallaModificarAPN(
                     onCancel = {
