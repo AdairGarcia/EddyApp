@@ -36,26 +36,26 @@ fun shutdown(onSuccess: () -> Unit, onError: (String) -> Unit) {
     })
 }
 
-fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Unit){
+fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getConectedClients().enqueue(object: Callback<ClientListResponse> {
         override fun onResponse(call: Call<ClientListResponse>, response: Response<ClientListResponse>) {
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                body?.let {
-                    if (it.clients.isEmpty()){
-                        onError("No se encontraron dispositivos conectados")
-                    } else {
-                        onResult(it.clients)
-                    }
-                } ?: onError("No se encontraron dispositivos conectados")
+                if (body?.status == "error") {
+                    onError("Error al obtener dispositivos conectados: ${body.message}")
+                } else if (body?.clients.isNullOrEmpty()) {
+                    onError("No se encontraron dispositivos conectados")
+                } else {
+                    body?.let { onResult(it.clients) }
+                }
             } else {
                 val errorBody = response.errorBody()?.string()
                 onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
             }
         }
 
-        override fun onFailure(call: Call<ClientListResponse>, t: Throwable){
+        override fun onFailure(call: Call<ClientListResponse>, t: Throwable) {
             onError("Hubo un error en la petición a Eddy: ${t.message}")
         }
     })
@@ -67,13 +67,13 @@ fun getWifiList(onResult: (List<WifiNetwork>) -> Unit, onError: (String) -> Unit
         override fun onResponse(call: Call<WifiListResponse>, response: Response<WifiListResponse>) {
             if (response.isSuccessful) {
                 val body = response.body()
-                body?.let {
-                    if (it.message.isEmpty()) {
-                        onError("No se encontraron redes Wi-Fi disponibles")
-                    } else {
-                        onResult(it.message)
-                    }
-                } ?: onError("No se encontraron redes Wi-Fi disponibles")
+                if (body?.status == "error") {
+                    onError("Error al obtener la lista de redes Wi-Fi: ${body.message}")
+                } else if (body?.networks.isNullOrEmpty()) {
+                    onError("No se encontraron redes Wi-Fi disponibles")
+                } else {
+                    body?.let { onResult(it.networks) }
+                }
             } else {
                 val errorBody = response.errorBody()?.string()
                 onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
