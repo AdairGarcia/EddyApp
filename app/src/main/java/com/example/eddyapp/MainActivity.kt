@@ -72,7 +72,13 @@ class MainActivity : ComponentActivity() {
             composable(ModificarAPN.route){
                 PantallaModificarAPN(
                     onCancel = {
-                        navController.navigate(Home.route)
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
+                    }, onSuccess = {
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
                     }
                 )
             }

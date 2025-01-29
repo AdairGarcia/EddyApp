@@ -1,5 +1,6 @@
 package com.example.eddyapp.data.api
 
+import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
@@ -8,6 +9,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface ApiService {
     @GET("shutdown")
@@ -21,4 +23,7 @@ interface ApiService {
 
     @POST("wifi-connection")
     fun wifiConnection(@Body request: WifiConnectionRequest): Call<ApiResponse>
+
+    @PUT("apn-configuration")
+    fun apnConfiguration(@Body request: ApiConfigurationRequest): Call<ApiResponse>
 }
