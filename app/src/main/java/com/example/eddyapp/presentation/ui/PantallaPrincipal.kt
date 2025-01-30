@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.shutdown
+import com.example.eddyapp.data.api.updateConnectionMode
 
 @Composable
 fun PantallaPrincipal(
@@ -50,6 +51,8 @@ fun PantallaPrincipal(
     var showChangeNetworkModeDialog by remember { mutableStateOf(false) }
     var showTurnOffModule by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
+
+    var connectionMode by remember { mutableStateOf("Wi-Fi") }
 
     Scaffold(
         topBar = {
@@ -128,7 +131,23 @@ fun PantallaPrincipal(
 
     MultiDialog(
         show = showChangeNetworkModeDialog,
-        onConfirm = { showChangeNetworkModeDialog = false },
+        onConfirm = {
+            isLoading = true
+            updateConnectionMode(
+                mode = connectionMode,
+                onSuccess = {
+                    isLoading = false
+                    connectionMode = if (connectionMode == "Wi-Fi") "Móvil" else "Wi-Fi"
+                    Toast.makeText(context, "Modo de conexión cambiado exitosamente a: " + connectionMode, Toast.LENGTH_SHORT).show()
+                },
+                onError = { errorMessage ->
+                    isLoading = false
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
+
+            showChangeNetworkModeDialog = false
+        },
         onDismiss = { showChangeNetworkModeDialog = false },
         title = R.string.cambiar_modo_conexion,
         textConfirmation = R.string.cambiar

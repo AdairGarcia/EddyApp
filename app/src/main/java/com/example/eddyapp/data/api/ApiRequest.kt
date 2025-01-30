@@ -5,6 +5,7 @@ import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.Client
 import com.example.eddyapp.data.model.ClientListResponse
+import com.example.eddyapp.data.model.ConnectionModeRequest
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
 import com.example.eddyapp.data.model.WifiNetwork
@@ -137,5 +138,30 @@ fun updateApnConfiguration(apn: String, username: String, password: String, onSu
             onError("Error al actualizar la configuración APN: ${t.message}")
         }
     })
+}
 
+fun updateConnectionMode(mode: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    val request = ConnectionModeRequest(mode)
+    apiService.connectionMode(request).enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>){
+            if(response.isSuccessful){
+                val body = response.body()
+                if(body?.status == "error"){
+                    onError("Error al actualizar el modo de conexión: ${body.message}")
+                } else {
+                    Log.d("RESPONSE CONNECTION MODE", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error al actualizar el modo de conexión: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error al actualizar el modo de conexión: ${t.message}")
+        }
+    })
 }
