@@ -63,6 +63,7 @@ fun PantallaPrincipal(
     var batteryLevel by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
+        isLoading = true
         getGeneralStatus(
             onResult = { status ->
                 connectionMode = status.connection_mode
