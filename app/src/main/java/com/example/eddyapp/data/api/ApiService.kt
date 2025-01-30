@@ -4,6 +4,7 @@ import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.ConnectionModeRequest
+import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
 import retrofit2.Call
@@ -30,4 +31,7 @@ interface ApiService {
 
     @PUT("connection-mode")
     fun connectionMode(@Body request: ConnectionModeRequest): Call<ApiResponse>
+
+    @GET("general-status")
+    fun getGeneralStatus(): Call<GeneralStatusResponse>
 }

@@ -20,7 +20,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
+import com.example.eddyapp.data.api.getGeneralStatus
 import com.example.eddyapp.data.api.shutdown
 import com.example.eddyapp.data.api.updateConnectionMode
 
@@ -52,7 +55,34 @@ fun PantallaPrincipal(
     var showTurnOffModule by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    var connectionMode by remember { mutableStateOf("Wi-Fi") }
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var connectionMode by remember { mutableStateOf("") }
+    var networkName by remember { mutableStateOf("") }
+    var signalStrength by remember { mutableIntStateOf(0) }
+    var batteryLevel by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        getGeneralStatus(
+            onResult = { status ->
+                connectionMode = status.connection_mode
+                networkName = status.status.name
+                signalStrength = status.status.signal
+                batteryLevel = status.battery_level
+                errorMessage = null
+                isLoading = false
+            },
+            onError = { error ->
+                connectionMode = ""
+                networkName = ""
+                signalStrength = 0
+                batteryLevel = 0
+                errorMessage = error
+                isLoading = false
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -86,11 +116,11 @@ fun PantallaPrincipal(
                     )
                 }
                 CenterPrincipal(
-                    mode = R.drawable.wifi_symbol,
+                    mode = connectionMode,
                     alexa = R.drawable.alexa,
-                    networkName = R.string.network_name,
+                    networkName = networkName,
                     batteryLevel = R.string.battery_level,
-                    batteryModule = R.drawable.battery,
+                    batteryModule = batteryLevel,
                     modifier = Modifier
                 )
                 Row(horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -177,14 +207,19 @@ fun PantallaPrincipal(
 
 @Composable
 fun CenterPrincipal(
-    @DrawableRes mode: Int,
     @DrawableRes alexa: Int,
-    @DrawableRes batteryModule: Int,
     @StringRes batteryLevel: Int,
-    @StringRes networkName: Int,
+    batteryModule: Int,
+    networkName: String,
+    mode: String,
     modifier: Modifier = Modifier
 ){
-    Row (modifier = modifier.padding(25.dp).background(color = Color(0xFF77B9F2)),
+    val batteryImage = getBatteryImage(batteryModule)
+    val modelImage = getConnectionImage(mode)
+
+    Row (modifier = modifier.padding(25.dp)
+        .background(color = Color(0xFF77B9F2))
+        .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -196,11 +231,11 @@ fun CenterPrincipal(
             horizontalAlignment = CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
             ) {
-            Image(painterResource(id = mode),
+            Image(painterResource(id = modelImage),
                 contentDescription = "Network Mode",
                 modifier = modifier.padding(10.dp).size(70.dp)
             )
-            Text(text = stringResource(id = networkName),
+            Text(text = networkName,
                 color = Color(0xFF020F59),
                 fontSize = 14.sp,
                 modifier = modifier.padding(bottom = 10.dp)
@@ -210,11 +245,15 @@ fun CenterPrincipal(
                 fontSize = 14.sp,
                 modifier = modifier.padding(top =  10.dp)
             )
-            Image(painterResource(id = batteryModule),
+            Image(painterResource(id = batteryImage),
                 contentDescription = "Battery Module State",
                 modifier = modifier.padding(10.dp).size(70.dp)
             )
-
+            Text(text = "$batteryModule%",
+                color = Color(0xFF020F59),
+                fontSize = 14.sp,
+                modifier = modifier.padding(top =  10.dp)
+            )
         }
     }
 }
@@ -254,6 +293,27 @@ fun OptionBoton(
     }
 }
 
+@Composable
+fun getBatteryImage(batteryLevel: Int): Int {
+    return when {
+        batteryLevel >= 75 -> R.drawable.battery_full_solid
+        batteryLevel >= 50 -> R.drawable.battery_three_quarters_solid
+        batteryLevel >= 25 -> R.drawable.battery_half_solid
+        batteryLevel >= 10 -> R.drawable.battery_quarter_solid
+        else -> R.drawable.battery_empty_solid
+    }
+}
+
+@Composable
+fun getConnectionImage(connectionMode: String): Int{
+    return when {
+        connectionMode == "Wi-Fi" -> R.drawable.wifi_symbol
+        connectionMode == "Mobile" -> R.drawable.mobile_signal_solid
+        else -> R.drawable.wifi_symbol
+    }
+
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -275,11 +335,11 @@ fun PantallaPrincipalPreview() {
 @Composable
 fun CenterPrincipalPreview() {
     CenterPrincipal(
-        mode = R.drawable.wifi_symbol,
+        mode = "Wi-Fi",
         alexa = R.drawable.alexa,
-        networkName = R.string.network_name,
+        networkName = "El nombre de la red",
         batteryLevel = R.string.battery_level,
-        batteryModule = R.drawable.battery,
+        batteryModule = 50,
         modifier = Modifier
     )
 }

@@ -6,6 +6,8 @@ import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.Client
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.ConnectionModeRequest
+import com.example.eddyapp.data.model.GeneralStatusResponse
+import com.example.eddyapp.data.model.SystemStatus
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
 import com.example.eddyapp.data.model.WifiNetwork
@@ -162,6 +164,31 @@ fun updateConnectionMode(mode: String, onSuccess: () -> Unit, onError: (String) 
         override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
             Log.e("ERROR", t.message.toString())
             onError("Error al actualizar el modo de conexión: ${t.message}")
+        }
+    })
+}
+
+fun getGeneralStatus(onResult: (SystemStatus) -> Unit, onError: (String) -> Unit) {
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    apiService.getGeneralStatus().enqueue(object: Callback<GeneralStatusResponse> {
+        override fun onResponse(call: Call<GeneralStatusResponse>, response: Response<GeneralStatusResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error al obtener el estado general: ${body.message}")
+                } else if (body?.data == null) {
+                    onError("No se pudo obtener el estado general del dispositivo Eddy")
+                } else {
+                    onResult(body.data)
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<GeneralStatusResponse>, t: Throwable) {
+            onError("Hubo un error en la petición a Eddy: ${t.message}")
         }
     })
 }
