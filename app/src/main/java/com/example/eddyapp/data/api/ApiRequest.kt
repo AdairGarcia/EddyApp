@@ -5,7 +5,6 @@ import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.Client
 import com.example.eddyapp.data.model.ClientListResponse
-import com.example.eddyapp.data.model.ConnectionModeRequest
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.SystemStatus
 import com.example.eddyapp.data.model.WifiConnectionRequest
@@ -142,10 +141,9 @@ fun updateApnConfiguration(apn: String, username: String, password: String, onSu
     })
 }
 
-fun updateConnectionMode(mode: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+fun updateConnectionMode(onSuccess: (String) -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
-    val request = ConnectionModeRequest(mode)
-    apiService.connectionMode(request).enqueue(object: Callback<ApiResponse> {
+    apiService.connectionMode().enqueue(object: Callback<ApiResponse> {
         override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>){
             if(response.isSuccessful){
                 val body = response.body()
@@ -153,7 +151,7 @@ fun updateConnectionMode(mode: String, onSuccess: () -> Unit, onError: (String) 
                     onError("Error al actualizar el modo de conexión: ${body.message}")
                 } else {
                     Log.d("RESPONSE CONNECTION MODE", body.toString())
-                    onSuccess()
+                    onSuccess(body?.message ?: "Modo de conexión actualizado correctamente")
                 }
             } else {
                 val errorBody = response.errorBody()?.string()

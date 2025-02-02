@@ -165,9 +165,9 @@ fun PantallaPrincipal(
         onConfirm = {
             isLoading = true
             updateConnectionMode(
-                mode = connectionMode,
-                onSuccess = {
+                onSuccess = { newConnection ->
                     isLoading = false
+                    connectionMode = newConnection
                     connectionMode = if (connectionMode == "Wi-Fi") "Móvil" else "Wi-Fi"
                     Toast.makeText(context, "Modo de conexión cambiado exitosamente a: " + connectionMode, Toast.LENGTH_SHORT).show()
                 },

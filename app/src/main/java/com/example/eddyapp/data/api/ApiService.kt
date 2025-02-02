@@ -3,7 +3,6 @@ package com.example.eddyapp.data.api
 import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.ClientListResponse
-import com.example.eddyapp.data.model.ConnectionModeRequest
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
 import com.example.eddyapp.data.model.WifiListResponse
@@ -20,7 +19,7 @@ interface ApiService {
     @GET("connected-clients")
     fun getConectedClients(): Call<ClientListResponse>
 
-    @GET("wifi-list")
+    @GET("wifi-scan")
     fun getWifiList(): Call<WifiListResponse>
 
     @POST("wifi-connection")
@@ -29,8 +28,8 @@ interface ApiService {
     @PUT("apn-configuration")
     fun apnConfiguration(@Body request: ApiConfigurationRequest): Call<ApiResponse>
 
-    @PUT("connection-mode")
-    fun connectionMode(@Body request: ConnectionModeRequest): Call<ApiResponse>
+    @PUT("toggle-ppp-connection")
+    fun connectionMode(): Call<ApiResponse>
 
     @GET("general-status")
     fun getGeneralStatus(): Call<GeneralStatusResponse>
