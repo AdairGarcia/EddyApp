@@ -27,3 +27,7 @@ object VerDispositivos: Destinations {
 object VerBateria: Destinations {
     override val route = "ver-bateria"
 }
+
+object Tutorial: Destinations {
+    override val route = "tutorial"
+}

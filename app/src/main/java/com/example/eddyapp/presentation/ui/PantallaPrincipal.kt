@@ -47,7 +47,8 @@ fun PantallaPrincipal(
     onCambiarRedWifi: () -> Unit,
     onModificarAPN: () -> Unit,
     onVerDispositivos: () -> Unit,
-    onVerBateria: () -> Unit
+    onVerBateria: () -> Unit,
+    onTutorial: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -91,7 +92,11 @@ fun PantallaPrincipal(
 
     Scaffold(
         topBar = {
-            Header()
+            Header(
+                onTutorial = {
+                    onTutorial()
+                }
+            )
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
@@ -358,7 +363,7 @@ fun OptionBotonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaPrincipalPreview() {
-    PantallaPrincipal ({},{},{},{})
+    PantallaPrincipal ({},{},{},{},{})
 }
 
 @Preview(showBackground = true)

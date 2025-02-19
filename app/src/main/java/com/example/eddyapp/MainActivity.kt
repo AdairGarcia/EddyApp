@@ -11,6 +11,7 @@ import com.example.eddyapp.presentation.navigation.Home
 import com.example.eddyapp.presentation.navigation.ListaWifi
 import com.example.eddyapp.presentation.navigation.ListaWifiFormulario
 import com.example.eddyapp.presentation.navigation.ModificarAPN
+import com.example.eddyapp.presentation.navigation.Tutorial
 import com.example.eddyapp.presentation.navigation.VerBateria
 import com.example.eddyapp.presentation.navigation.VerDispositivos
 import com.example.eddyapp.presentation.ui.PantallaListaWifi
@@ -19,6 +20,7 @@ import com.example.eddyapp.presentation.ui.PantallaModificarAPN
 import com.example.eddyapp.presentation.ui.PantallaPrincipal
 import com.example.eddyapp.presentation.ui.PantallaVerBateria
 import com.example.eddyapp.presentation.ui.PantallaVerDispositivos
+import com.example.eddyapp.presentation.ui.PantallasTutorial
 
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +48,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onVerBateria = {
                         navController.navigate(VerBateria.route)
+                    },
+                    onTutorial = {
+                        navController.navigate(Tutorial.route)
                     }
                 )
             }
@@ -99,6 +104,9 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(Home.route)
                     }
                 )
+            }
+            composable(Tutorial.route) {
+                PantallasTutorial()
             }
         }
     }
