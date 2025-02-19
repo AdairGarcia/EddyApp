@@ -62,7 +62,7 @@ fun PantallaPrincipal(
     var signalStrength by remember { mutableIntStateOf(0) }
     var batteryLevel by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(Unit) {
+    fun onRefresh() {
         isLoading = true
         getGeneralStatus(
             onResult = { status ->
@@ -83,6 +83,10 @@ fun PantallaPrincipal(
                 Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
             }
         )
+    }
+
+    LaunchedEffect(Unit) {
+        onRefresh()
     }
 
     Scaffold(
@@ -119,10 +123,13 @@ fun PantallaPrincipal(
                 CenterPrincipal(
                     mode = connectionMode,
                     alexa = R.drawable.alexa,
+                    refresh = R.drawable.refresh,
                     networkName = networkName,
                     batteryLevel = R.string.battery_level,
                     batteryModule = batteryLevel,
-                    modifier = Modifier
+                    onRefresh = { onRefresh() },
+                    modifier = Modifier,
+                    enabled = !isLoading
                 )
                 Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                     OptionBoton(
@@ -209,11 +216,14 @@ fun PantallaPrincipal(
 @Composable
 fun CenterPrincipal(
     @DrawableRes alexa: Int,
+    @DrawableRes refresh: Int,
     @StringRes batteryLevel: Int,
     batteryModule: Int,
     networkName: String,
     mode: String,
-    modifier: Modifier = Modifier
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ){
     val batteryImage = getBatteryImage(batteryModule)
     val modelImage = getConnectionImage(mode)
@@ -224,10 +234,28 @@ fun CenterPrincipal(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Image(painterResource(id = alexa),
-            contentDescription = "Alexa",
-            modifier = modifier.padding(20.dp).size(120.dp),
-        )
+        Column(
+            modifier = modifier,
+            horizontalAlignment = CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(painterResource(id = alexa),
+                contentDescription = "Alexa",
+                modifier = modifier.padding(20.dp).size(120.dp),
+            )
+            Button(
+                onClick = {
+                    onRefresh()
+                },
+                enabled = enabled,
+            ) {
+                Image(painterResource(id = refresh),
+                    contentDescription = "Refresh Icon",
+                    modifier = modifier.size(35.dp)
+                )
+            }
+        }
+
         Column (modifier = modifier,
             horizontalAlignment = CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
@@ -283,7 +311,7 @@ fun OptionBoton(
         Button(
             onClick = { function() },
             colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
-            shape = RoundedCornerShape(5.dp),
+            shape = RoundedCornerShape(10.dp),
             enabled = enabled,
         ) {
             Image(painterResource(id = icon),
@@ -338,9 +366,11 @@ fun CenterPrincipalPreview() {
     CenterPrincipal(
         mode = "Wi-Fi",
         alexa = R.drawable.alexa,
+        refresh = R.drawable.refresh,
         networkName = "El nombre de la red",
         batteryLevel = R.string.battery_level,
         batteryModule = 50,
+        onRefresh = { },
         modifier = Modifier
     )
 }
