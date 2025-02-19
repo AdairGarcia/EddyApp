@@ -74,8 +74,8 @@ fun PantallaPrincipal(
                 isLoading = false
             },
             onError = { error ->
-                connectionMode = ""
-                networkName = ""
+                connectionMode = "Offline"
+                networkName = "No disponible"
                 signalStrength = 0
                 batteryLevel = 0
                 errorMessage = error
@@ -176,7 +176,8 @@ fun PantallaPrincipal(
                     isLoading = false
                     connectionMode = newConnection
                     connectionMode = if (connectionMode == "Wi-Fi") "Móvil" else "Wi-Fi"
-                    Toast.makeText(context, "Modo de conexión cambiado exitosamente a: " + connectionMode, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        "Modo de conexión cambiado exitosamente a: $connectionMode", Toast.LENGTH_SHORT).show()
                 },
                 onError = { errorMessage ->
                     isLoading = false
@@ -311,7 +312,8 @@ fun OptionBoton(
         Button(
             onClick = { function() },
             colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(10
+                .dp),
             enabled = enabled,
         ) {
             Image(painterResource(id = icon),
@@ -335,14 +337,13 @@ fun getBatteryImage(batteryLevel: Int): Int {
 
 @Composable
 fun getConnectionImage(connectionMode: String): Int{
-    return when {
-        connectionMode == "Wi-Fi" -> R.drawable.wifi_symbol
-        connectionMode == "Mobile" -> R.drawable.mobile_signal_solid
+    return when (connectionMode) {
+        "Wi-Fi" -> R.drawable.wifi_symbol
+        "Mobile" -> R.drawable.mobile_signal_solid
+        "Offline" -> R.drawable.offline
         else -> R.drawable.wifi_symbol
     }
-
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -364,7 +365,7 @@ fun PantallaPrincipalPreview() {
 @Composable
 fun CenterPrincipalPreview() {
     CenterPrincipal(
-        mode = "Wi-Fi",
+        mode = "Offline",
         alexa = R.drawable.alexa,
         refresh = R.drawable.refresh,
         networkName = "El nombre de la red",
