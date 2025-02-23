@@ -5,6 +5,7 @@ import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
+import com.example.eddyapp.data.model.WifiKnownConnection
 import com.example.eddyapp.data.model.WifiListResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -33,4 +34,7 @@ interface ApiService {
 
     @GET("general-status")
     fun getGeneralStatus(): Call<GeneralStatusResponse>
+
+    @PUT("connect-network")
+    fun wifiKnownConnection(@Body request: WifiKnownConnection): Call<ApiResponse>
 }

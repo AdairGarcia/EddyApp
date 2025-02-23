@@ -8,6 +8,7 @@ import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.SystemStatus
 import com.example.eddyapp.data.model.WifiConnectionRequest
+import com.example.eddyapp.data.model.WifiKnownConnection
 import com.example.eddyapp.data.model.WifiListResponse
 import com.example.eddyapp.data.model.WifiNetwork
 import retrofit2.Call
@@ -76,6 +77,8 @@ fun getWifiList(onResult: (List<WifiNetwork>) -> Unit, onError: (String) -> Unit
                     onError("No se encontraron redes Wi-Fi disponibles")
                 } else {
                     body?.let { onResult(it.networks) }
+                    // colocar log
+                    Log.d("RESPONSE WIFI LIST", body.toString())
                 }
             } else {
                 val errorBody = response.errorBody()?.string()
@@ -100,6 +103,32 @@ fun wifiConnection(ssid: String, password: String, onSuccess: () -> Unit, onErro
                     onError("Error en la conexión: ${body.message}")
                 } else {
                     Log.d("RESPONSE WIFI CONNECTION", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error en la conexión: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error en la conexión: ${t.message}")
+        }
+    })
+}
+
+fun wifiKnownConnection(ssid: String, onSuccess: () -> Unit, onError: (String) -> Unit){
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    val request = WifiKnownConnection(ssid)
+    apiService.wifiKnownConnection(request).enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error en la conexión: ${body.message}")
+                } else {
+                    Log.d("RESPONSE WIFI KNOWN CONNECTION", body.toString())
                     onSuccess()
                 }
             } else {
@@ -150,7 +179,6 @@ fun updateConnectionMode(onSuccess: (String) -> Unit, onError: (String) -> Unit)
                 if(body?.status == "error"){
                     onError("Error al actualizar el modo de conexión: ${body.message}")
                 } else {
-                    Log.d("RESPONSE CONNECTION MODE", body.toString())
                     onSuccess(body?.message ?: "Modo de conexión actualizado correctamente")
                 }
             } else {
@@ -190,3 +218,4 @@ fun getGeneralStatus(onResult: (SystemStatus) -> Unit, onError: (String) -> Unit
         }
     })
 }
+

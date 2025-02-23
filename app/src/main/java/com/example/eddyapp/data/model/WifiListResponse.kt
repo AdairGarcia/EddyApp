@@ -13,5 +13,6 @@ data class WifiListResponse(
 data class WifiNetwork(
     val ssid: String,
     val signal: Int,
-    val security: String
+    val security: String,
+    val known: Boolean
 )

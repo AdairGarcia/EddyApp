@@ -1,5 +1,6 @@
 package com.example.eddyapp.presentation.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,12 +37,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.getWifiList
+import com.example.eddyapp.data.api.wifiKnownConnection
 import com.example.eddyapp.data.model.WifiNetwork
 
 @Composable
 fun PantallaListaWifi(
-    onSeleccionaWifi: (String) -> Unit = {}
+    onSeleccionaWifi: (String) -> Unit = {},
+    onSuccess: () -> Unit
+
 ) {
+    val context = LocalContext.current
     val wifiNetworks = remember { mutableStateListOf<WifiNetwork>() }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -95,9 +101,33 @@ fun PantallaListaWifi(
                 )
             } else {
                 wifiNetworks.forEach { network ->
-                    ContenedorWifi(network) { selectedNetwork ->
-                        onSeleccionaWifi(selectedNetwork.ssid)
+                    if(network.known){
+                        ContenedorWifi(Color(0xFF77B9F2), network) { selectedNetwork ->
+                            wifiKnownConnection(
+                                ssid = selectedNetwork.ssid,
+                                onSuccess = {
+                                    Toast.makeText(
+                                        context,
+                                        "Ahora estas usando la red ${selectedNetwork.ssid}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    onSuccess()
+                                },
+                                onError = { errorMessage ->
+                                    Toast.makeText(
+                                        context,
+                                        errorMessage,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            )
+                        }
+                    } else {
+                        ContenedorWifi(Color(0xFF020F59), network) { selectedNetwork ->
+                            onSeleccionaWifi(selectedNetwork.ssid)
+                        }
                     }
+
                 }
             }
         }
@@ -106,6 +136,7 @@ fun PantallaListaWifi(
 
 @Composable
 fun ContenedorWifi(
+    color: Color,
     network: WifiNetwork,
     function: (WifiNetwork) -> Unit
 ){
@@ -113,7 +144,7 @@ fun ContenedorWifi(
         onClick = {
             function(network)
         },
-        colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
+        colors = ButtonDefaults.buttonColors(color),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.padding(25.dp),
     ) {
@@ -147,11 +178,11 @@ fun ContenedorWifi(
 @Preview(showBackground = true)
 @Composable
 fun PantallaListaWifiPreview() {
-    PantallaListaWifi()
+    PantallaListaWifi({}, {})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContenedorWifiPreview() {
-    ContenedorWifi(WifiNetwork("Infinitum123", 100, "WPA2")) {}
+    ContenedorWifi(Color(0xFF020F59), WifiNetwork("MiRed", 100, "WPA2", true)) {}
 }
