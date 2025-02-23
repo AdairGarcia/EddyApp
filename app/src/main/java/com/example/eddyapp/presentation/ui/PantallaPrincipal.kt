@@ -110,19 +110,22 @@ fun PantallaPrincipal(
                         text = R.string.cambiar_red_wifi_a_movil,
                         icon = R.drawable.cambiar_wifi,
                         function = { showChangeNetworkModeDialog = true },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFFFF8C00)
                     )
                     OptionBoton(
                         text = R.string.apagar_modulo,
                         icon = R.drawable.apagar,
                         function = { showTurnOffModule = true },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFF590202)
                     )
                     OptionBoton(
                         text = R.string.cambiar_red_wifi,
                         icon = R.drawable.cambiar_wifi,
                         function = { onCambiarRedWifi() },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFF020F59)
                     )
                 }
                 CenterPrincipal(
@@ -141,7 +144,8 @@ fun PantallaPrincipal(
                         text = R.string.configuracion_apn,
                         icon = R.drawable.apn_symbol,
                         function = { onModificarAPN() },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFF616161)
                     )
                     OptionBoton(
                         text = R.string.dispositivos_conectados,
@@ -149,13 +153,15 @@ fun PantallaPrincipal(
                         function = {
                             onVerDispositivos()
                         },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFF1E90FF)
                     )
                     OptionBoton(
                         text = R.string.estado_bateria,
                         icon = R.drawable.battery_state,
                         function = { onVerBateria() },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        color = Color(0xFF009688)
                     )
                 }
             }
@@ -254,6 +260,7 @@ fun CenterPrincipal(
                     onRefresh()
                 },
                 enabled = enabled,
+                colors = ButtonDefaults.buttonColors(Color(0xFF8BC34A)),
             ) {
                 Image(painterResource(id = refresh),
                     contentDescription = "Refresh Icon",
@@ -299,7 +306,8 @@ fun OptionBoton(
     @DrawableRes icon: Int,
     function : () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    color: Color,
 ){
     Column(modifier = modifier.size(120.dp),
         horizontalAlignment = CenterHorizontally,
@@ -316,7 +324,7 @@ fun OptionBoton(
             )
         Button(
             onClick = { function() },
-            colors = ButtonDefaults.buttonColors(Color(0xFF020F59)),
+            colors = ButtonDefaults.buttonColors(color),
             shape = RoundedCornerShape(10
                 .dp),
             enabled = enabled,
@@ -356,7 +364,10 @@ fun OptionBotonPreview() {
     OptionBoton(
         text = R.string.cambiar_red_wifi_a_movil,
         icon = R.drawable.cambiar_wifi,
-        function = {  }
+        function = {  },
+        modifier = Modifier,
+        enabled = true,
+        color = Color(0xFFFF8C00)
     )
 }
 

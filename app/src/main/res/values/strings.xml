@@ -6,6 +6,7 @@
     <string name="configuracion_apn">Modificar configuración APN</string>
     <string name="dispositivos_conectados">Ver dispositivos conectados</string>
     <string name="estado_bateria">Ver estado de la batería</string>
+    <string name="refrescar_pagina">Refrescar página</string>
     <string name="network_name">SSID El rincon de la conexion</string>
     <string name="battery_level">Nivel de batería</string>
 

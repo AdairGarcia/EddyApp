@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +56,38 @@ fun Header(
             }
         }
     }
+}
+
+@Composable
+fun HeaderTutorial(
+) {
+    Row(
+        modifier = Modifier
+            .background(color = Color(0xFFE9EFF2))
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.help),
+            contentDescription = "Help icon",
+            modifier = Modifier
+                .size(65.dp)
+                .padding(start = 10.dp)
+        )
+        Text(
+            text = "Tutorial",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF020F59),
+            modifier = Modifier.padding(start = 10.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HeaderTutorialPreview() {
+    HeaderTutorial()
 }
 
 @Preview(showBackground = true)
