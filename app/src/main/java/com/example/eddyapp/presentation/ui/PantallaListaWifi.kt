@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
+import com.example.eddyapp.data.api.getConnectionStatus
 import com.example.eddyapp.data.api.getWifiList
 import com.example.eddyapp.data.api.openWifiConnection
 import com.example.eddyapp.data.api.wifiKnownConnection
@@ -107,12 +108,33 @@ fun PantallaListaWifi(
                             wifiKnownConnection(
                                 ssid = selectedNetwork.ssid,
                                 onSuccess = {
-                                    Toast.makeText(
-                                        context,
-                                        "Ahora estas usando la red ${selectedNetwork.ssid}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    onSuccess()
+                                    getConnectionStatus(
+                                        ssid = selectedNetwork.ssid,
+                                        onResult = { status ->
+                                            if (status == "connected") {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Ahora estas usando la red ${selectedNetwork.ssid}",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                                onSuccess()
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "No se pudo conectar a la red ${selectedNetwork.ssid}",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        },
+                                        onError = { errorMessage ->
+                                            Toast.makeText(
+                                                context,
+                                                errorMessage,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+
+                                    )
                                 },
                                 onError = { errorMessage ->
                                     Toast.makeText(

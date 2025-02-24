@@ -40,4 +40,7 @@ interface ApiService {
 
     @PUT("open-wifi")
     fun openWifiConnection(@Body request: WifiKnownConnection): Call<ApiResponse>
+
+    @GET("connection-status")
+    fun getConnectionStatus(@Body request: WifiKnownConnection): Call<ApiResponse>
 }

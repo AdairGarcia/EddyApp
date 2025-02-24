@@ -169,6 +169,32 @@ fun openWifiConnection(ssid: String, onSuccess: () -> Unit, onError: (String) ->
     })
 }
 
+fun getConnectionStatus(ssid: String, onResult: (String) -> Unit, onError: (String) -> Unit){
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    val request = WifiKnownConnection("")
+    apiService.getConnectionStatus(request).enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error al obtener el estado de la conexión: ${body.message}")
+                } else {
+                    Log.d("RESPONSE CONNECTION STATUS", body.toString())
+                    onResult(body?.message ?: "Estado de la conexión desconocido")
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error al obtener el estado de la conexión: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error al obtener el estado de la conexión: ${t.message}")
+        }
+    })
+}
+
 fun updateApnConfiguration(apn: String, username: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit){
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     val request = ApiConfigurationRequest(apn, username, password)
