@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.getWifiList
+import com.example.eddyapp.data.api.openWifiConnection
 import com.example.eddyapp.data.api.wifiKnownConnection
 import com.example.eddyapp.data.model.WifiNetwork
 
@@ -102,8 +103,29 @@ fun PantallaListaWifi(
             } else {
                 wifiNetworks.forEach { network ->
                     if(network.known){
-                        ContenedorWifi(Color(0xFF77B9F2), network) { selectedNetwork ->
+                        ContenedorWifi(Color(0xFF1E88E5), network) { selectedNetwork ->
                             wifiKnownConnection(
+                                ssid = selectedNetwork.ssid,
+                                onSuccess = {
+                                    Toast.makeText(
+                                        context,
+                                        "Ahora estas usando la red ${selectedNetwork.ssid}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    onSuccess()
+                                },
+                                onError = { errorMessage ->
+                                    Toast.makeText(
+                                        context,
+                                        errorMessage,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            )
+                        }
+                    } else if(network.security == ""){
+                        ContenedorWifi(Color(0xFF020F59), network) { selectedNetwork ->
+                            openWifiConnection(
                                 ssid = selectedNetwork.ssid,
                                 onSuccess = {
                                     Toast.makeText(

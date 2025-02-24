@@ -37,4 +37,7 @@ interface ApiService {
 
     @PUT("connect-network")
     fun wifiKnownConnection(@Body request: WifiKnownConnection): Call<ApiResponse>
+
+    @PUT("open-wifi")
+    fun openWifiConnection(@Body request: WifiKnownConnection): Call<ApiResponse>
 }

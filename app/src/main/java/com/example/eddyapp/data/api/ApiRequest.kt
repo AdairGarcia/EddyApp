@@ -77,7 +77,6 @@ fun getWifiList(onResult: (List<WifiNetwork>) -> Unit, onError: (String) -> Unit
                     onError("No se encontraron redes Wi-Fi disponibles")
                 } else {
                     body?.let { onResult(it.networks) }
-                    // colocar log
                     Log.d("RESPONSE WIFI LIST", body.toString())
                 }
             } else {
@@ -129,6 +128,32 @@ fun wifiKnownConnection(ssid: String, onSuccess: () -> Unit, onError: (String) -
                     onError("Error en la conexión: ${body.message}")
                 } else {
                     Log.d("RESPONSE WIFI KNOWN CONNECTION", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error en la conexión: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error en la conexión: ${t.message}")
+        }
+    })
+}
+
+fun openWifiConnection(ssid: String, onSuccess: () -> Unit, onError: (String) -> Unit){
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    val request = WifiKnownConnection(ssid)
+    apiService.openWifiConnection(request).enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error en la conexión: ${body.message}")
+                } else {
+                    Log.d("RESPONSE OPEN WIFI CONNECTION", body.toString())
                     onSuccess()
                 }
             } else {
