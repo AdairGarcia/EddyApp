@@ -171,7 +171,7 @@ fun openWifiConnection(ssid: String, onSuccess: () -> Unit, onError: (String) ->
 
 fun getConnectionStatus(ssid: String, onResult: (String) -> Unit, onError: (String) -> Unit){
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
-    val request = WifiKnownConnection("")
+    val request = WifiKnownConnection(ssid)
     apiService.getConnectionStatus(request).enqueue(object: Callback<ApiResponse> {
         override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
             if (response.isSuccessful) {
@@ -180,7 +180,7 @@ fun getConnectionStatus(ssid: String, onResult: (String) -> Unit, onError: (Stri
                     onError("Error al obtener el estado de la conexión: ${body.message}")
                 } else {
                     Log.d("RESPONSE CONNECTION STATUS", body.toString())
-                    onResult(body?.message ?: "Estado de la conexión desconocido")
+                    onResult(body?.message ?: "unknown")
                 }
             } else {
                 val errorBody = response.errorBody()?.string()

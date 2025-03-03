@@ -108,33 +108,12 @@ fun PantallaListaWifi(
                             wifiKnownConnection(
                                 ssid = selectedNetwork.ssid,
                                 onSuccess = {
-                                    getConnectionStatus(
-                                        ssid = selectedNetwork.ssid,
-                                        onResult = { status ->
-                                            if (status == "connected") {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Ahora estas usando la red ${selectedNetwork.ssid}",
-                                                    Toast.LENGTH_LONG
-                                                ).show()
-                                                onSuccess()
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    "No se pudo conectar a la red ${selectedNetwork.ssid}",
-                                                    Toast.LENGTH_LONG
-                                                ).show()
-                                            }
-                                        },
-                                        onError = { errorMessage ->
-                                            Toast.makeText(
-                                                context,
-                                                errorMessage,
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-
-                                    )
+                                    Toast.makeText(
+                                        context,
+                                        "Ahora estas usando la red ${selectedNetwork.ssid}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    onSuccess()
                                 },
                                 onError = { errorMessage ->
                                     Toast.makeText(

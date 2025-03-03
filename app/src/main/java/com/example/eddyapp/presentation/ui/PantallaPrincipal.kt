@@ -130,6 +130,7 @@ fun PantallaPrincipal(
                 }
                 CenterPrincipal(
                     mode = connectionMode,
+                    signalStrength = signalStrength,
                     alexa = R.drawable.alexa,
                     refresh = R.drawable.refresh,
                     networkName = networkName,
@@ -186,7 +187,7 @@ fun PantallaPrincipal(
                 onSuccess = { newConnection ->
                     isLoading = false
                     connectionMode = newConnection
-                    connectionMode = if (connectionMode == "Wi-Fi") "Móvil" else "Wi-Fi"
+                    connectionMode = if (connectionMode == "Wi-Fi") "Wi-Fi" else "Móvil"
                     Toast.makeText(context,
                         "Modo de conexión cambiado exitosamente a: $connectionMode", Toast.LENGTH_SHORT).show()
                 },
@@ -233,12 +234,13 @@ fun CenterPrincipal(
     batteryModule: Int,
     networkName: String,
     mode: String,
+    signalStrength: Int,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ){
     val batteryImage = getBatteryImage(batteryModule)
-    val modelImage = getConnectionImage(mode)
+    val modelImage = getSignalImage(mode, signalStrength)
 
     Row (modifier = modifier.padding(25.dp)
         .background(color = Color(0xFF77B9F2))
@@ -349,12 +351,22 @@ fun getBatteryImage(batteryLevel: Int): Int {
 }
 
 @Composable
-fun getConnectionImage(connectionMode: String): Int{
+fun getSignalImage(connectionMode: String, signal: Int): Int {
     return when (connectionMode) {
-        "Wi-Fi" -> R.drawable.wifi_symbol
-        "Mobile" -> R.drawable.mobile_signal_solid
-        "Offline" -> R.drawable.offline
-        else -> R.drawable.wifi_symbol
+        "Wi-Fi" -> when {
+            signal >= 75 -> R.drawable.signal_wifi_4_bar
+            signal >= 50 -> R.drawable.signal_wifi_3_bar
+            signal >= 25 -> R.drawable.signal_wifi_2_bar
+            signal >= 10 -> R.drawable.signal_wifi_1_bar
+            else -> R.drawable.signal_wifi_0_bar
+        }
+        "Mobile" -> when {
+            signal >= 75 -> R.drawable.signal_cellular_4_bar
+            signal >= 50 -> R.drawable.signal_cellular_3_bar
+            signal >= 25 -> R.drawable.signal_cellular_2_bar
+            else -> R.drawable.signal_cellular_1_bar
+        }
+        else -> R.drawable.offline
     }
 }
 
@@ -381,7 +393,8 @@ fun PantallaPrincipalPreview() {
 @Composable
 fun CenterPrincipalPreview() {
     CenterPrincipal(
-        mode = "Offline",
+        mode = "Wi-Fi",
+        signalStrength = 100,
         alexa = R.drawable.alexa,
         refresh = R.drawable.refresh,
         networkName = "El nombre de la red",
