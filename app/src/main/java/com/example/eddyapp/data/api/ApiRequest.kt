@@ -256,6 +256,7 @@ fun getGeneralStatus(onResult: (SystemStatus) -> Unit, onError: (String) -> Unit
                 } else if (body?.data == null) {
                     onError("No se pudo obtener el estado general del dispositivo Eddy")
                 } else {
+                    Log.d("RESPONSE GENERAL STATUS", body.toString())
                     onResult(body.data)
                 }
             } else {
