@@ -108,7 +108,8 @@ fun PantallaPrincipal(
                 Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                     OptionBoton(
                         text = R.string.cambiar_red_wifi_a_movil,
-                        icon = R.drawable.cambiar_wifi,
+                        icon = getSignalIcon(connectionMode),
+                        optionalConcatenation = getFunctionTag(connectionMode),
                         function = { showChangeNetworkModeDialog = true },
                         enabled = !isLoading,
                         color = Color(0xFFFF8C00)
@@ -122,7 +123,7 @@ fun PantallaPrincipal(
                     )
                     OptionBoton(
                         text = R.string.cambiar_red_wifi,
-                        icon = R.drawable.cambiar_wifi,
+                        icon = R.drawable.change_wifi,
                         function = { onCambiarRedWifi() },
                         enabled = !isLoading,
                         color = Color(0xFF020F59)
@@ -282,7 +283,8 @@ fun CenterPrincipal(
             Text(text = networkName,
                 color = Color(0xFF020F59),
                 fontSize = 14.sp,
-                modifier = modifier.padding(bottom = 10.dp)
+                modifier = modifier.padding(bottom = 10.dp),
+                textAlign = TextAlign.Center,
             )
             Text(text = stringResource(id = batteryLevel),
                 color = Color(0xFF020F59),
@@ -306,8 +308,9 @@ fun CenterPrincipal(
 fun OptionBoton(
     @StringRes text: Int,
     @DrawableRes icon: Int,
-    function : () -> Unit,
     modifier: Modifier = Modifier,
+    optionalConcatenation: String? = null,
+    function : () -> Unit,
     enabled: Boolean = true,
     color: Color,
 ){
@@ -315,7 +318,9 @@ fun OptionBoton(
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center
         ) {
-        Text(text = stringResource(id = text),
+        val displayText = stringResource(id = text) + (optionalConcatenation ?: "")
+
+        Text(text = displayText,
             color = Color(0xFF020F59),
             fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
@@ -370,6 +375,24 @@ fun getSignalImage(connectionMode: String, signal: Int): Int {
     }
 }
 
+@Composable
+fun getSignalIcon(connectionMode: String): Int {
+    return when (connectionMode) {
+        "Wi-Fi" -> R.drawable.mobile_signal_solid
+        "Mobile" -> R.drawable.change_wifi
+        else -> R.drawable.offline
+    }
+}
+
+@Composable
+fun getFunctionTag(connectionMode: String): String {
+    return when (connectionMode) {
+        "Wi-Fi" -> " a Móvil"
+        "Mobile" -> " a Wi-Fi"
+        else -> " a Wifi"
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun OptionBotonPreview() {
@@ -397,7 +420,7 @@ fun CenterPrincipalPreview() {
         signalStrength = 100,
         alexa = R.drawable.alexa,
         refresh = R.drawable.refresh,
-        networkName = "El nombre de la red",
+        networkName = "El nombre de la red extremadamente largo",
         batteryLevel = R.string.battery_level,
         batteryModule = 50,
         onRefresh = { },

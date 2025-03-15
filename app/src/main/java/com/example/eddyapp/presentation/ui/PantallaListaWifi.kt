@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -201,7 +202,7 @@ fun ContenedorWifi(
         Row (
             modifier = Modifier.fillMaxWidth().padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Image(
                 painter = painterResource(id = signalImage),
@@ -211,7 +212,11 @@ fun ContenedorWifi(
             Text(text = network.ssid,
                 color = Color.White,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f).padding(horizontal = 10.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Image(
                 painter = painterResource(id = R.drawable.locked),
@@ -243,5 +248,6 @@ fun PantallaListaWifiPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ContenedorWifiPreview() {
-    ContenedorWifi(Color(0xFF020F59), WifiNetwork("MiRed", 100, "WPA2", true), true) {}
+    ContenedorWifi(Color(0xFF020F59),
+        WifiNetwork("Nombre de la red extremadamente largo para verificar funcionamiento", 100, "WPA2", true), true) {}
 }

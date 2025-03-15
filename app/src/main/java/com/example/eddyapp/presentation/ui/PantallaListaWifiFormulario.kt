@@ -69,7 +69,9 @@ fun PantallaListaWifiFormulario(
                     label = { Text(text = "Nombre de la red") },
                     modifier = Modifier.padding(10.dp),
                     readOnly = true,
-                    onValueChange = {/* No-op */}
+                    onValueChange = {/* No-op */},
+                    singleLine = true,
+
                 )
                 OutlinedTextField(
                     value = contrasena,
@@ -164,5 +166,5 @@ fun PantallaListaWifiFormulario(
 @Preview(showBackground = true)
 @Composable
 fun PantallaListaWifiFormularioPreview() {
-    PantallaListaWifiFormulario({},"Infinitum123",{})
+    PantallaListaWifiFormulario({},"Infinitum123hdabhadshasdbjhdajadsdsnaadhasdjabdshabdjabhjbjhabhdjqdvwqbjdbqodnwqodiqwdqwd",{})
 }

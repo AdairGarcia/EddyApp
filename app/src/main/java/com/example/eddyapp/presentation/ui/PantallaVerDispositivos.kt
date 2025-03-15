@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -184,6 +185,9 @@ fun ContenedorDispositivo(
                 color = Color(0xFF020F59),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 10.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         Column (
@@ -203,7 +207,7 @@ fun ContenedorDispositivo(
 @Preview(showBackground = true)
 @Composable
 fun ContenedorDispositivoPreview() {
-    ContenedorDispositivo("Dispositivo 1", "192.168.0.165")
+    ContenedorDispositivo("Dispositivo1hdbsabjdsbshbashdasbdhasbdasbhdabsabdasbddberoemverovoenuevreiv", "192.168.0.165")
 }
 
 @Preview(showBackground = true)
