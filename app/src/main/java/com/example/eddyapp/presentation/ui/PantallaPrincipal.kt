@@ -45,7 +45,7 @@ import com.example.eddyapp.data.api.updateConnectionMode
 @Composable
 fun PantallaPrincipal(
     onCambiarRedWifi: () -> Unit,
-    onModificarAPN: () -> Unit,
+    onConfiguracionAvanzada: () -> Unit,
     onVerDispositivos: () -> Unit,
     onVerBateria: () -> Unit,
     onTutorial: () -> Unit
@@ -143,9 +143,9 @@ fun PantallaPrincipal(
                 )
                 Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                     OptionBoton(
-                        text = R.string.configuracion_apn,
-                        icon = R.drawable.apn_symbol,
-                        function = { onModificarAPN() },
+                        text = R.string.advanced_settings,
+                        icon = R.drawable.settings,
+                        function = { onConfiguracionAvanzada() },
                         enabled = !isLoading,
                         color = Color(0xFF616161)
                     )

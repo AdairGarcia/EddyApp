@@ -91,7 +91,7 @@ fun PantallaListaWifi(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
-                )
+            )
 
             if (isLoading) {
                 CircularProgressIndicator(

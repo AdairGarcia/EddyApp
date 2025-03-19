@@ -31,3 +31,11 @@ object VerBateria: Destinations {
 object Tutorial: Destinations {
     override val route = "tutorial"
 }
+
+object ConfiguracionAvanzada: Destinations {
+    override val route = "configuracion-avanzada"
+}
+
+object ConfigurarHotspot: Destinations {
+    override val route = "configurar-hotspot"
+}

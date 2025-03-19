@@ -1,6 +1,7 @@
 package com.example.eddyapp.data.api
 
 import com.example.eddyapp.data.model.ApiConfigurationRequest
+import com.example.eddyapp.data.model.ApiHotspotConfigRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.GeneralStatusResponse
@@ -28,6 +29,9 @@ interface ApiService {
 
     @PUT("apn-configuration")
     fun apnConfiguration(@Body request: ApiConfigurationRequest): Call<ApiResponse>
+
+    @PUT("hotspot-configuration")
+    fun hotspotConfiguration(@Body request: ApiHotspotConfigRequest): Call<ApiResponse>
 
     @PUT("toggle-ppp-connection")
     fun connectionMode(): Call<ApiResponse>

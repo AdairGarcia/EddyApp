@@ -2,6 +2,7 @@ package com.example.eddyapp.data.api
 
 import android.util.Log
 import com.example.eddyapp.data.model.ApiConfigurationRequest
+import com.example.eddyapp.data.model.ApiHotspotConfigRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.Client
 import com.example.eddyapp.data.model.ClientListResponse
@@ -217,6 +218,32 @@ fun updateApnConfiguration(apn: String, username: String, password: String, onSu
         override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
             Log.e("ERROR", t.message.toString())
             onError("Error al actualizar la configuración APN: ${t.message}")
+        }
+    })
+}
+
+fun updateHotspotConfiguration(ssid: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit){
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    val request = ApiHotspotConfigRequest(ssid, password)
+    apiService.hotspotConfiguration(request).enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error al actualizar la configuración del hotspot: ${body.message}")
+                } else {
+                    Log.d("RESPONSE HOTSPOT CONFIGURATION", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error al actualizar la configuración del hotspot: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error al actualizar la configuración del hotspot: ${t.message}")
         }
     })
 }

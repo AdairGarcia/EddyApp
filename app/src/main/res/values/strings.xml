@@ -3,7 +3,7 @@
     <string name="cambiar_red_wifi_a_movil">Cambiar modo de conexión</string>
     <string name="apagar_modulo">Apagar módulo Eddy</string>
     <string name="cambiar_red_wifi">Redes Wifi</string>
-    <string name="configuracion_apn">Modificar configuración APN</string>
+    <string name="configuracion_apn">Configuración de red móvil</string>
     <string name="dispositivos_conectados">Ver dispositivos conectados</string>
     <string name="estado_bateria">Ver estado de la batería</string>
     <string name="refrescar_pagina">Refrescar página</string>
@@ -16,5 +16,8 @@
     <string name="apagar">Apagar</string>
 
     <string name="show_password">Mostrar contraseña</string>
+
+    <string name="advanced_settings">Configuración avanzada</string>
+    <string name="hotspot_configuration">Configuración de punto de acceso</string>
 
 </resources>
