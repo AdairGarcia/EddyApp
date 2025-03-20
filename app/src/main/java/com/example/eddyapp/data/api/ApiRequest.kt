@@ -5,6 +5,7 @@ import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiHotspotConfigRequest
 import com.example.eddyapp.data.model.ApiResponse
 import com.example.eddyapp.data.model.Client
+import com.example.eddyapp.data.model.ClientBatteryResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.SystemStatus
@@ -61,6 +62,30 @@ fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Un
         }
 
         override fun onFailure(call: Call<ClientListResponse>, t: Throwable) {
+            onError("Hubo un error en la petición a Eddy: ${t.message}")
+        }
+    })
+}
+
+fun getBatteryStatus(onResult: (Int, Boolean) -> Unit, onError: (String) -> Unit) {
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    apiService.getBatteryStatus().enqueue(object: Callback<ClientBatteryResponse> {
+        override fun onResponse(call: Call<ClientBatteryResponse>, response: Response<ClientBatteryResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error al obtener el estado de la batería: ${body.message}")
+                } else {
+                    Log.d("RESPONSE BATTERY STATUS", body.toString())
+                    onResult(body?.charge ?: 0, body?.charging ?: false)
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ClientBatteryResponse>, t: Throwable) {
             onError("Hubo un error en la petición a Eddy: ${t.message}")
         }
     })

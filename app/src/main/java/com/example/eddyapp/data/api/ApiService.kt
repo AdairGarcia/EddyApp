@@ -3,6 +3,7 @@ package com.example.eddyapp.data.api
 import com.example.eddyapp.data.model.ApiConfigurationRequest
 import com.example.eddyapp.data.model.ApiHotspotConfigRequest
 import com.example.eddyapp.data.model.ApiResponse
+import com.example.eddyapp.data.model.ClientBatteryResponse
 import com.example.eddyapp.data.model.ClientListResponse
 import com.example.eddyapp.data.model.GeneralStatusResponse
 import com.example.eddyapp.data.model.WifiConnectionRequest
@@ -47,4 +48,7 @@ interface ApiService {
 
     @GET("connection-status")
     fun getConnectionStatus(@Body request: WifiKnownConnection): Call<ApiResponse>
+
+    @GET("battery-status")
+    fun getBatteryStatus(): Call<ClientBatteryResponse>
 }

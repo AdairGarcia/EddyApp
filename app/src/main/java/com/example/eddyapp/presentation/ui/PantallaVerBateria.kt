@@ -1,6 +1,5 @@
 package com.example.eddyapp.presentation.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,10 +11,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,20 +32,51 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
+import com.example.eddyapp.data.api.getBatteryStatus
+import com.example.eddyapp.data.model.ClientBatteryResponse
 
 @Composable
 fun PantallaVerBateria(
-    @DrawableRes bateria: Int,
-    cargaRestante: String,
     onEntendido: () -> Unit = {}
 ){
+
+    val battery = remember { mutableStateOf(ClientBatteryResponse(
+        status = "unknown",
+        charge = 0,
+        charging = false
+    )) }
+    var errorMessage by remember { mutableStateOf<String?>( null ) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        // Call the API to get the battery status
+        getBatteryStatus(
+            onResult = { batteryCharge, batteryCharging ->
+                battery.value = ClientBatteryResponse(
+                    status = "success",
+                    charge = batteryCharge,
+                    charging = batteryCharging
+                )
+                errorMessage = null
+                isLoading = false
+            },
+            onError = { error ->
+                battery.value = ClientBatteryResponse(
+                    status = "error",
+                    charge = 0,
+                    charging = false,
+                    message = error
+                )
+                errorMessage = error
+                isLoading = false
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             Header()
         },
-        bottomBar = {
-
-        }
     ) {
         padding ->
         Column(
@@ -55,27 +91,39 @@ fun PantallaVerBateria(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
             )
-            ContenedorBateria(
-                bateria = bateria,
-                cargaRestante = cargaRestante
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Button(
-                onClick = {
-                    onEntendido()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    Color(0xFF020F59)
-                ),
-                modifier = Modifier.padding(top = 20.dp, bottom = 50.dp).width(200.dp)
-            ) {
-                Text(
-                    text = "Entendido",
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(horizontal = 20.dp),
+            if(isLoading){
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(16.dp)
                 )
+            } else if( errorMessage != null ){
+                Text(
+                    text = errorMessage!!,
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                ContenedorBateria(
+                    cargaRestante = battery.value.charge
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    onClick = {
+                        onEntendido()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        Color(0xFF020F59)
+                    ),
+                    modifier = Modifier.padding(top = 20.dp, bottom = 50.dp).width(200.dp)
+                ) {
+                    Text(
+                        text = "Entendido",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
             }
-
 
         }
     }
@@ -83,9 +131,10 @@ fun PantallaVerBateria(
 
 @Composable
 fun ContenedorBateria(
-    @DrawableRes bateria: Int,
-    cargaRestante: String
+    cargaRestante: Int
 ){
+    val batteryImage = getBatteryImage(cargaRestante)
+
     Surface(
         shape = RoundedCornerShape(5.dp),
         color = Color(0xFF020F59),
@@ -96,36 +145,29 @@ fun ContenedorBateria(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painterResource(id = bateria),
+                painterResource(id = batteryImage),
                 contentDescription = "BateriaRestante",
                 modifier = Modifier.padding(10.dp).size(175.dp)
             )
             Text(
-                text = "Carga restante aproximada: $cargaRestante",
+                text = "Carga restante aproximada: $cargaRestante%",
                 color = Color(0xFFFFFFFF),
                 fontSize = 20.sp,
                 modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp),
             )
         }
     }
-
 }
 
 @Preview (showBackground = true)
 @Composable
 fun PantallaVerBateriaPreview(){
-    PantallaVerBateria(
-        R.drawable.battery_quarter_solid,
-        "25%",
-    ) {}
+    PantallaVerBateria {}
 }
 
 @Preview (showBackground = true)
 @Composable
 fun ContenedorBateriaPreview(){
-    ContenedorBateria(
-        R.drawable.battery_quarter_solid,
-        "25%"
-    )
+    ContenedorBateria(50)
 }
 

@@ -125,8 +125,6 @@ class MainActivity : ComponentActivity() {
             }
             composable(VerBateria.route){
                 PantallaVerBateria(
-                    bateria = R.drawable.battery_quarter_solid,
-                    cargaRestante = "100%",
                     onEntendido = {
                         navController.navigate(Home.route){
                             popUpTo(Home.route){ inclusive = true }
