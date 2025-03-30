@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.getGeneralStatus
+import com.example.eddyapp.data.api.restart
 import com.example.eddyapp.data.api.shutdown
 import com.example.eddyapp.data.api.updateConnectionMode
 
@@ -53,7 +54,9 @@ fun PantallaPrincipal(
     val context = LocalContext.current
 
     var showChangeNetworkModeDialog by remember { mutableStateOf(false) }
+    var showSystemModule by remember { mutableStateOf(false) }
     var showTurnOffModule by remember { mutableStateOf(false) }
+    var showRestartModule by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
 
@@ -117,7 +120,7 @@ fun PantallaPrincipal(
                     OptionBoton(
                         text = R.string.apagar_modulo,
                         icon = R.drawable.apagar,
-                        function = { showTurnOffModule = true },
+                        function = { showSystemModule = true },
                         enabled = !isLoading,
                         color = Color(0xFF590202)
                     )
@@ -180,7 +183,7 @@ fun PantallaPrincipal(
         }
     }
 
-    MultiDialog(
+    ConfirmationDialog(
         show = showChangeNetworkModeDialog,
         onConfirm = {
             isLoading = true
@@ -205,7 +208,20 @@ fun PantallaPrincipal(
         textConfirmation = R.string.cambiar
     )
 
-    MultiDialog(
+    OptionsSystemDialog(
+        show = showSystemModule,
+        onDismiss = { showSystemModule = false},
+        loading = isLoading,
+        title = R.string.systems_options,
+        onShutdown = {
+            showSystemModule = false
+            showTurnOffModule = true },
+        onRestart = {
+            showSystemModule = false
+            showRestartModule = true }
+    )
+
+    ConfirmationDialog(
         show = showTurnOffModule,
         onConfirm = {
             isLoading = true
@@ -224,6 +240,27 @@ fun PantallaPrincipal(
         onDismiss = { showTurnOffModule = false },
         title = R.string.apagar_modulo_dialog,
         textConfirmation = R.string.apagar
+    )
+
+    ConfirmationDialog(
+        show = showRestartModule,
+        onConfirm = {
+            isLoading = true
+            restart(
+                onSuccess = {
+                    isLoading = false
+                    Toast.makeText(context, "Módulo reiniciado exitosamente", Toast.LENGTH_SHORT).show()
+                },
+                onError = { errorMessage ->
+                    isLoading = false
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
+            showRestartModule = false
+        },
+        onDismiss = { showRestartModule = false },
+        title = R.string.restart_module,
+        textConfirmation = R.string.restart_confirmation
     )
 }
 

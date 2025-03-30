@@ -42,6 +42,31 @@ fun shutdown(onSuccess: () -> Unit, onError: (String) -> Unit) {
     })
 }
 
+fun restart(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    val apiService = RetrofitClient.instace.create(ApiService::class.java)
+    apiService.getReboot().enqueue(object: Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.status == "error") {
+                    onError("Error al reiniciar: ${body.message}")
+                } else {
+                    Log.d("RESPONSE REBOOT", body.toString())
+                    onSuccess()
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                onError("Error al reiniciar: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            Log.e("ERROR", t.message.toString())
+            onError("Error al reiniciar: ${t.message}")
+        }
+    })
+}
+
 fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getConectedClients().enqueue(object: Callback<ClientListResponse> {

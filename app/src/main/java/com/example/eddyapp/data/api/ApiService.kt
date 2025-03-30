@@ -51,4 +51,7 @@ interface ApiService {
 
     @GET("battery-status")
     fun getBatteryStatus(): Call<ClientBatteryResponse>
+
+    @GET("reboot")
+    fun getReboot(): Call<ApiResponse>
 }

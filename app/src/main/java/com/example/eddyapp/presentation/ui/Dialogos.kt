@@ -3,6 +3,7 @@ package com.example.eddyapp.presentation.ui
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +24,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.eddyapp.R
 
 @Composable
-fun MultiDialog(
+fun ConfirmationDialog(
     show: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
@@ -33,11 +34,10 @@ fun MultiDialog(
     if(show) {
         Dialog(
             onDismissRequest = { onDismiss() },
-
         ) {
             Column(
                 modifier = Modifier.background(Color(0xFFE9EFF2),
-                    shape = RoundedCornerShape(30.dp)).padding(16.dp),
+                shape = RoundedCornerShape(30.dp)).padding(16.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
                 Text(
@@ -73,11 +73,70 @@ fun MultiDialog(
     }
 }
 
+@Composable
+fun OptionsSystemDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    @StringRes title: Int,
+    onShutdown: () -> Unit,
+    onRestart: () -> Unit,
+    loading: Boolean
+){
+    if(show){
+        Dialog(
+            onDismissRequest = { onDismiss() }
+        ) {
+            Column(
+                modifier = Modifier.background(Color(0xFFE9EFF2),
+                shape = RoundedCornerShape(30.dp)).padding(16.dp),
+                horizontalAlignment = CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(id = title),
+                    color = Color(0xFF020F59),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 32.dp)
+                )
+                Row {
+                    OptionBoton(
+                        text = R.string.apagar_modulo,
+                        icon = R.drawable.apagar,
+                        function = { onShutdown() },
+                        enabled = !loading,
+                        color = Color(0xFF590202)
+                    )
+                    OptionBoton(
+                        text = R.string.restart_module,
+                        icon = R.drawable.restart,
+                        function = { onRestart() },
+                        enabled = !loading,
+                        color = Color(0xFFCC7722)
+                    )
+                }
+            }
+        }
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
 fun MultiDialogPreview() {
-    MultiDialog(show = true, onConfirm = {}, onDismiss = {},
+    ConfirmationDialog(show = true, onConfirm = {}, onDismiss = {},
         title = R.string.apagar_modulo_dialog,
         textConfirmation = R.string.apagar
         )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SystemDialogPreview() {
+    OptionsSystemDialog(show = true, onDismiss = {},
+        title = R.string.systems_options,
+        onShutdown = {},
+        onRestart = {},
+        loading = false
+    )
 }

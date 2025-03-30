@@ -20,4 +20,8 @@
     <string name="advanced_settings">Configuración avanzada</string>
     <string name="hotspot_configuration">Configuración de punto de acceso</string>
 
+    <string name="systems_options">¿Qué quieres hacer?</string>
+    <string name="restart_module">Reiniciar módulo Eddy</string>
+    <string name="restart_confirmation">Reiniciar</string>
+
 </resources>
