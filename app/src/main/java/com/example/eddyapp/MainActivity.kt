@@ -14,6 +14,8 @@ import com.example.eddyapp.presentation.navigation.ListaWifi
 import com.example.eddyapp.presentation.navigation.ListaWifiFormulario
 import com.example.eddyapp.presentation.navigation.ModificarAPN
 import com.example.eddyapp.presentation.navigation.Tutorial
+import com.example.eddyapp.presentation.navigation.TutorialConfiguracion
+import com.example.eddyapp.presentation.navigation.TutorialWifi
 import com.example.eddyapp.presentation.navigation.VerBateria
 import com.example.eddyapp.presentation.navigation.VerDispositivos
 import com.example.eddyapp.presentation.ui.PantallaConfiguracion
@@ -23,9 +25,10 @@ import com.example.eddyapp.presentation.ui.PantallaModificarAPN
 import com.example.eddyapp.presentation.ui.PantallaPrincipal
 import com.example.eddyapp.presentation.ui.PantallaVerBateria
 import com.example.eddyapp.presentation.ui.PantallaVerDispositivos
-import com.example.eddyapp.presentation.ui.PantallasTutorial
+import com.example.eddyapp.presentation.ui.PantallasTutorialPrincipal
 import com.example.eddyapp.presentation.ui.PantallaConfigurarHotspot
-
+import com.example.eddyapp.presentation.ui.PantallasTutorialConfiguracion
+import com.example.eddyapp.presentation.ui.PantallasTutorialWifi
 
 
 class MainActivity : ComponentActivity() {
@@ -68,6 +71,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onSeleccionaWifi = { selectedNetworkName ->
                         navController.navigate("${ListaWifiFormulario.route}/$selectedNetworkName")
+                    },
+                    onTutorial = {
+                        navController.navigate(TutorialWifi.route)
                     }
                 )
             }
@@ -133,7 +139,7 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable(Tutorial.route) {
-                PantallasTutorial()
+                PantallasTutorialPrincipal()
             }
             composable(ConfiguracionAvanzada.route){
                 PantallaConfiguracion(
@@ -142,8 +148,17 @@ class MainActivity : ComponentActivity() {
                     },
                     onConfigurarHotspot = {
                         navController.navigate(ConfigurarHotspot.route)
+                    },
+                    onTutorial = {
+                        navController.navigate(TutorialConfiguracion.route)
                     }
                 )
+            }
+            composable(TutorialWifi.route){
+                PantallasTutorialWifi()
+            }
+            composable(TutorialConfiguracion.route){
+                PantallasTutorialConfiguracion()
             }
         }
     }

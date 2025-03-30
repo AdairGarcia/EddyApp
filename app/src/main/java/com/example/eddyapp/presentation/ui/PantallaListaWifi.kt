@@ -48,8 +48,8 @@ import com.example.eddyapp.data.model.WifiNetwork
 @Composable
 fun PantallaListaWifi(
     onSeleccionaWifi: (String) -> Unit = {},
-    onSuccess: () -> Unit
-
+    onSuccess: () -> Unit,
+    onTutorial: () -> Unit
 ) {
     val context = LocalContext.current
     val wifiNetworks = remember { mutableStateListOf<WifiNetwork>() }
@@ -76,7 +76,11 @@ fun PantallaListaWifi(
 
     Scaffold (
         topBar = {
-            Header()
+            Header(
+                onTutorial = {
+                    onTutorial()
+                }
+            )
         }
     ) {
         padding ->
@@ -242,7 +246,7 @@ fun getWifiSignalImage(signal: Int): Int {
 @Preview(showBackground = true)
 @Composable
 fun PantallaListaWifiPreview() {
-    PantallaListaWifi({}, {})
+    PantallaListaWifi({}, {}, {})
 }
 
 @Preview(showBackground = true)

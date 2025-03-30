@@ -73,7 +73,7 @@ fun PantallaConfigurarHotspot(
                     modifier = Modifier.padding(vertical = 32.dp)
                 )
                 OutlinedTextField(
-                    label = { Text(text = "Nombre del punto de acceso:") },
+                    label = { Text(text = "Nombre del punto de acceso") },
                     value = ssid,
                     modifier = Modifier.padding(10.dp),
                     onValueChange = {

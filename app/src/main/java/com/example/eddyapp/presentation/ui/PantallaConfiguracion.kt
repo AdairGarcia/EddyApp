@@ -31,11 +31,16 @@ import com.example.eddyapp.R
 @Composable
 fun PantallaConfiguracion(
     onModificarAPN: () -> Unit,
-    onConfigurarHotspot: () -> Unit
+    onConfigurarHotspot: () -> Unit,
+    onTutorial: () -> Unit
 ){
     Scaffold(
         topBar = {
-            Header()
+            Header(
+                onTutorial = {
+                    onTutorial()
+                }
+            )
         }
     ) {
         padding ->
@@ -114,7 +119,7 @@ fun OptionContainer(
 @Preview (showBackground = true)
 @Composable
 fun PreviewPantallaConfiguracion(){
-    PantallaConfiguracion({},{})
+    PantallaConfiguracion({},{},{})
 }
 
 

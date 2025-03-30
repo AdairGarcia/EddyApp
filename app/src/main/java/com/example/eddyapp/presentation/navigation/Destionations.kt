@@ -39,3 +39,11 @@ object ConfiguracionAvanzada: Destinations {
 object ConfigurarHotspot: Destinations {
     override val route = "configurar-hotspot"
 }
+
+object TutorialWifi: Destinations {
+    override val route = "tutorial-wifi"
+}
+
+object TutorialConfiguracion: Destinations {
+    override val route = "tutorial-configuracion"
+}
