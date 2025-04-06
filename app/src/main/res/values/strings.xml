@@ -2,7 +2,7 @@
     <string name="app_name">EddyApp</string>
     <string name="cambiar_red_wifi_a_movil">Cambiar modo de conexión</string>
     <string name="apagar_modulo">Apagar módulo Eddy</string>
-    <string name="cambiar_red_wifi">Redes Wifi</string>
+    <string name="cambiar_red_wifi">Redes Wi-Fi</string>
     <string name="configuracion_apn">Configuración de red móvil</string>
     <string name="dispositivos_conectados">Ver dispositivos conectados</string>
     <string name="estado_bateria">Ver estado de la batería</string>
@@ -23,5 +23,8 @@
     <string name="systems_options">¿Qué quieres hacer?</string>
     <string name="restart_module">Reiniciar módulo Eddy</string>
     <string name="restart_confirmation">Reiniciar</string>
+
+    <string name="available_networks">Redes disponibles</string>
+    <string name="devices_found">Dispositivos encontrados</string>
 
 </resources>

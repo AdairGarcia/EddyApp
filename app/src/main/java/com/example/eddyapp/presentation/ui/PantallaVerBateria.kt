@@ -48,8 +48,9 @@ fun PantallaVerBateria(
     var errorMessage by remember { mutableStateOf<String?>( null ) }
     var isLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        // Call the API to get the battery status
+    fun onRefresh() {
+        isLoading = true
+        errorMessage = null
         getBatteryStatus(
             onResult = { batteryCharge, batteryCharging ->
                 battery.value = ClientBatteryResponse(
@@ -73,6 +74,10 @@ fun PantallaVerBateria(
         )
     }
 
+    LaunchedEffect(Unit) {
+        onRefresh()
+    }
+
     Scaffold(
         topBar = {
             Header()
@@ -91,48 +96,41 @@ fun PantallaVerBateria(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
             )
-            if(isLoading){
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(16.dp)
-                )
-            } else if( errorMessage != null ){
-                Text(
-                    text = errorMessage!!,
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
-                )
-            } else {
-                ContenedorBateria(
-                    cargaRestante = battery.value.charge
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = {
-                        onEntendido()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        Color(0xFF020F59)
-                    ),
-                    modifier = Modifier.padding(top = 20.dp, bottom = 50.dp).width(200.dp)
-                ) {
-                    Text(
-                        text = "Entendido",
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(horizontal = 20.dp),
-                    )
+            ContenedorBateria(
+                cargaRestante = battery.value.charge,
+                isLoading = isLoading,
+                errorMessage = errorMessage,
+                onRefresh = {
+                    onRefresh()
                 }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(
+                onClick = {
+                    onEntendido()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    Color(0xFF020F59)
+                ),
+                modifier = Modifier.padding(top = 20.dp, bottom = 50.dp).width(200.dp)
+            ) {
+                Text(
+                    text = "Entendido",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
             }
-
         }
     }
 }
 
 @Composable
 fun ContenedorBateria(
-    cargaRestante: Int
-){
+    cargaRestante: Int,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onRefresh: () -> Unit = {}
+) {
     val batteryImage = getBatteryImage(cargaRestante)
 
     Surface(
@@ -144,17 +142,43 @@ fun ContenedorBateria(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painterResource(id = batteryImage),
-                contentDescription = "BateriaRestante",
-                modifier = Modifier.padding(10.dp).size(175.dp)
-            )
-            Text(
-                text = "Carga restante aproximada: $cargaRestante%",
-                color = Color(0xFFFFFFFF),
-                fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp),
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else if (errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                Image(
+                    painterResource(id = batteryImage),
+                    contentDescription = "BateriaRestante",
+                    modifier = Modifier.padding(10.dp).size(175.dp)
+                )
+                Button(
+                    onClick = {
+                        onRefresh()
+                    },
+                    colors = ButtonDefaults.buttonColors(Color(0xFF8BC34A)),
+                    modifier = Modifier.padding(5.dp)
+                ) {
+                    Image(painterResource(id = R.drawable.refresh),
+                        contentDescription = "Refresh Icon",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+                Text(
+                    text = "Carga restante aproximada: $cargaRestante%",
+                    color = Color(0xFFFFFFFF),
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp, top = 10.dp),
+                )
+            }
         }
     }
 }
@@ -168,6 +192,6 @@ fun PantallaVerBateriaPreview(){
 @Preview (showBackground = true)
 @Composable
 fun ContenedorBateriaPreview(){
-    ContenedorBateria(50)
+    ContenedorBateria(50, false, null) {}
 }
 

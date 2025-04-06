@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,8 +59,9 @@ fun PantallaListaWifi(
     var isLoading by remember { mutableStateOf(true) }
     var isLoadingNetwork by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        // Call the API to get the list of wifi networks
+    fun onRefresh() {
+        isLoading = true
+        errorMessage = null
         getWifiList(
             onResult = { networks ->
                 wifiNetworks.clear()
@@ -72,6 +75,10 @@ fun PantallaListaWifi(
                 isLoading = false
             }
         )
+    }
+
+    LaunchedEffect(Unit) {
+        onRefresh()
     }
 
     Scaffold (
@@ -96,7 +103,41 @@ fun PantallaListaWifi(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
             )
-
+            HorizontalDivider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                ,
+                color = Color.Gray,
+                thickness = 2.dp
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Text(
+                    text = stringResource(id = R.string.available_networks),
+                    color = Color(0xFF020F59),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.weight(1f)
+                )
+                Button(
+                    onClick = {
+                        onRefresh()
+                    },
+                    enabled = !isLoading,
+                    colors = ButtonDefaults.buttonColors(Color(0xFF8BC34A)),
+                ) {
+                    Image(painterResource(id = R.drawable.refresh),
+                        contentDescription = "Refresh Icon",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+            }
             if (isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(16.dp)
