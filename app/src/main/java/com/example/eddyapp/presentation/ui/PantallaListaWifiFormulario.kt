@@ -15,11 +15,15 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.data.api.wifiConnection
+import kotlinx.coroutines.launch
 
 @Composable
 fun PantallaListaWifiFormulario(
@@ -46,10 +51,18 @@ fun PantallaListaWifiFormulario(
     var showPassword by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
+    var contrasenaError by remember { mutableStateOf<String?>(null) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold (
         topBar = {
             Header()
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -77,11 +90,21 @@ fun PantallaListaWifiFormulario(
                     value = contrasena,
                     onValueChange = {
                         contrasena = it
+                        contrasenaError = null
                     },
                     label = { Text(text = "ContraseñaWPA") },
                     visualTransformation = if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(10.dp),
+                    isError = contrasenaError != null,
                 )
+                if (contrasenaError != null) {
+                    Text(
+                        text = contrasenaError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(10.dp)
@@ -98,6 +121,12 @@ fun PantallaListaWifiFormulario(
                 }
                 Button(
                     onClick = {
+                        // Validación del campo de contraseña
+                        if (contrasena.isBlank()) {
+                            contrasenaError = "El campo Contraseña es requerido"
+                            return@Button
+                        }
+
                         isLoading = true
                         wifiConnection(
                             ssid = nombreRed,
@@ -106,18 +135,20 @@ fun PantallaListaWifiFormulario(
                                 isLoading = false
                                 Toast.makeText(
                                     context,
-                                    "Ahora estas usando la red $nombreRed",
+                                    "Ahora estás usando la red $nombreRed",
                                     Toast.LENGTH_LONG
                                 ).show()
                                 onSuccess()
                             },
                             onError = { errorMessage ->
                                 isLoading = false
-                                Toast.makeText(
-                                    context,
-                                    errorMessage,
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = errorMessage,
+                                        duration = SnackbarDuration.Indefinite,
+                                        withDismissAction = true
+                                    )
+                                }
                             }
                         )
                     },

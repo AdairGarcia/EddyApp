@@ -17,11 +17,15 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 import com.example.eddyapp.data.api.updateHotspotConfiguration
+import kotlinx.coroutines.launch
 
 @Composable
 fun PantallaConfigurarHotspot(
@@ -48,13 +53,22 @@ fun PantallaConfigurarHotspot(
     var ssid by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    var ssidError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     var showPassword by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             Header()
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -78,17 +92,37 @@ fun PantallaConfigurarHotspot(
                     modifier = Modifier.padding(10.dp),
                     onValueChange = {
                         ssid = it
+                        ssidError = null
                     },
+                    isError = ssidError != null,
                 )
+                if (ssidError != null) {
+                    Text(
+                        text = ssidError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
                 OutlinedTextField(
                     label = { Text(text = "Contraseña") },
                     value = password,
                     modifier = Modifier.padding(10.dp),
                     onValueChange = {
                         password = it
+                        passwordError = null
                     },
                     visualTransformation = if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    isError = passwordError != null,
                 )
+                if (passwordError != null) {
+                    Text(
+                        text = passwordError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(10.dp)
@@ -106,19 +140,43 @@ fun PantallaConfigurarHotspot(
 
                 Button(
                     onClick = {
-                        isLoading = true
-                        updateHotspotConfiguration(
-                            ssid = ssid,
-                            password = password,
-                            onSuccess = {
-                                isLoading = false
-                                onSuccess()
-                            },
-                            onError = {
-                                isLoading = false
-                                Toast.makeText(context, "Error al configurar el punto de acceso", Toast.LENGTH_SHORT).show()
-                            }
-                        )
+                        // Validación de campos
+                        var isValid = true
+                        if (ssid.isBlank()) {
+                            ssidError = "El campo Nombre del punto de acceso es requerido"
+                            isValid = false
+                        }
+                        if (password.isBlank()) {
+                            passwordError = "El campo Contraseña es requerido"
+                            isValid = false
+                        }
+
+                        if (isValid) {
+                            isLoading = true
+                            updateHotspotConfiguration(
+                                ssid = ssid,
+                                password = password,
+                                onSuccess = {
+                                    isLoading = false
+                                    Toast.makeText(
+                                        context,
+                                        "Punto de acceso configurado exitosamente",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onSuccess()
+                                },
+                                onError = { errorMessage ->
+                                    isLoading = false
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = errorMessage,
+                                            duration = SnackbarDuration.Indefinite,
+                                            withDismissAction = true
+                                        )
+                                    }
+                                }
+                            )
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         Color(0xFF020F59)

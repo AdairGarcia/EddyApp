@@ -92,7 +92,7 @@ fun getConectedClients(onResult: (List<Client>) -> Unit, onError: (String) -> Un
     })
 }
 
-fun getBatteryStatus(onResult: (Int, Boolean) -> Unit, onError: (String) -> Unit) {
+fun getBatteryStatus(onResult: (Int, Boolean, Int) -> Unit, onError: (String) -> Unit) {
     val apiService = RetrofitClient.instace.create(ApiService::class.java)
     apiService.getBatteryStatus().enqueue(object: Callback<ClientBatteryResponse> {
         override fun onResponse(call: Call<ClientBatteryResponse>, response: Response<ClientBatteryResponse>) {
@@ -102,7 +102,7 @@ fun getBatteryStatus(onResult: (Int, Boolean) -> Unit, onError: (String) -> Unit
                     onError("Error al obtener el estado de la batería: ${body.message}")
                 } else {
                     Log.d("RESPONSE BATTERY STATUS", body.toString())
-                    onResult(body?.charge ?: 0, body?.charging ?: false)
+                    onResult(body?.charge ?: 0, body?.charging ?: false, body?.remaining_time ?: 0)
                 }
             } else {
                 val errorBody = response.errorBody()?.string()

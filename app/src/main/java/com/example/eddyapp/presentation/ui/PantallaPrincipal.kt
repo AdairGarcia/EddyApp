@@ -18,6 +18,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -42,6 +46,7 @@ import com.example.eddyapp.data.api.getGeneralStatus
 import com.example.eddyapp.data.api.restart
 import com.example.eddyapp.data.api.shutdown
 import com.example.eddyapp.data.api.updateConnectionMode
+import kotlinx.coroutines.launch
 
 @Composable
 fun PantallaPrincipal(
@@ -52,6 +57,8 @@ fun PantallaPrincipal(
     onTutorial: () -> Unit
 ) {
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     var showChangeNetworkModeDialog by remember { mutableStateOf(false) }
     var showSystemModule by remember { mutableStateOf(false) }
@@ -84,7 +91,14 @@ fun PantallaPrincipal(
                 batteryLevel = 0
                 errorMessage = error
                 isLoading = false
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = error,
+                        duration = SnackbarDuration.Indefinite,
+                        withDismissAction = true
+                    )
+                }
             }
         )
     }
@@ -100,7 +114,8 @@ fun PantallaPrincipal(
                     onTutorial()
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -197,7 +212,13 @@ fun PantallaPrincipal(
                 },
                 onError = { errorMessage ->
                     isLoading = false
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = errorMessage,
+                            duration = SnackbarDuration.Indefinite,
+                            withDismissAction = true
+                        )
+                    }
                 }
             )
 
@@ -232,7 +253,13 @@ fun PantallaPrincipal(
                 },
                 onError = { errorMessage ->
                     isLoading = false
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = errorMessage,
+                            duration = SnackbarDuration.Indefinite,
+                            withDismissAction = true
+                        )
+                    }
                 }
             )
             showTurnOffModule = false
@@ -253,7 +280,13 @@ fun PantallaPrincipal(
                 },
                 onError = { errorMessage ->
                     isLoading = false
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = errorMessage,
+                            duration = SnackbarDuration.Indefinite,
+                            withDismissAction = true
+                        )
+                    }
                 }
             )
             showRestartModule = false

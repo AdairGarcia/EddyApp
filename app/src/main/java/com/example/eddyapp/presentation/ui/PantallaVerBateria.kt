@@ -43,7 +43,9 @@ fun PantallaVerBateria(
     val battery = remember { mutableStateOf(ClientBatteryResponse(
         status = "unknown",
         charge = 0,
-        charging = false
+        charging = false,
+        remaining_time = 0,
+        message = null
     )) }
     var errorMessage by remember { mutableStateOf<String?>( null ) }
     var isLoading by remember { mutableStateOf(true) }
@@ -52,11 +54,12 @@ fun PantallaVerBateria(
         isLoading = true
         errorMessage = null
         getBatteryStatus(
-            onResult = { batteryCharge, batteryCharging ->
+            onResult = { batteryCharge, batteryCharging, batteryTime ->
                 battery.value = ClientBatteryResponse(
                     status = "success",
                     charge = batteryCharge,
-                    charging = batteryCharging
+                    charging = batteryCharging,
+                    remaining_time = batteryTime
                 )
                 errorMessage = null
                 isLoading = false
@@ -66,6 +69,7 @@ fun PantallaVerBateria(
                     status = "error",
                     charge = 0,
                     charging = false,
+                    remaining_time = 0,
                     message = error
                 )
                 errorMessage = error
@@ -98,6 +102,8 @@ fun PantallaVerBateria(
             )
             ContenedorBateria(
                 cargaRestante = battery.value.charge,
+                cargaEstado = battery.value.charging,
+                tiempoRestante = battery.value.remaining_time,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
                 onRefresh = {
@@ -127,6 +133,8 @@ fun PantallaVerBateria(
 @Composable
 fun ContenedorBateria(
     cargaRestante: Int,
+    cargaEstado: Boolean,
+    tiempoRestante: Int,
     isLoading: Boolean,
     errorMessage: String?,
     onRefresh: () -> Unit = {}
@@ -176,8 +184,26 @@ fun ContenedorBateria(
                     text = "Carga restante aproximada: $cargaRestante%",
                     color = Color(0xFFFFFFFF),
                     fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp, top = 10.dp),
                 )
+                Text(
+                    text = "Cargando: ${(
+                            if(cargaEstado) "Sí" else "No"
+                            )}",
+                    color = Color(0xFFFFFFFF),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp, top = 10.dp),
+                )
+                Text(
+                    text = "Tiempo restante aproximado: $tiempoRestante minutos",
+                    color = Color(0xFFFFFFFF),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp, top = 10.dp),
+                )
+
             }
         }
     }
@@ -192,6 +218,6 @@ fun PantallaVerBateriaPreview(){
 @Preview (showBackground = true)
 @Composable
 fun ContenedorBateriaPreview(){
-    ContenedorBateria(50, false, null) {}
+    ContenedorBateria(50, false, 30, false, null) {}
 }
 

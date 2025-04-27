@@ -20,6 +20,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +50,7 @@ import com.example.eddyapp.data.api.getWifiList
 import com.example.eddyapp.data.api.openWifiConnection
 import com.example.eddyapp.data.api.wifiKnownConnection
 import com.example.eddyapp.data.model.WifiNetwork
+import kotlinx.coroutines.launch
 
 @Composable
 fun PantallaListaWifi(
@@ -58,6 +63,9 @@ fun PantallaListaWifi(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var isLoadingNetwork by remember { mutableStateOf(false) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     fun onRefresh() {
         isLoading = true
@@ -88,7 +96,10 @@ fun PantallaListaWifi(
                     onTutorial()
                 }
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) {
         padding ->
         Column(
@@ -168,11 +179,13 @@ fun PantallaListaWifi(
                                 },
                                 onError = { errorMessage ->
                                     isLoadingNetwork = false
-                                    Toast.makeText(
-                                        context,
-                                        errorMessage,
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = errorMessage,
+                                            duration = SnackbarDuration.Indefinite,
+                                            withDismissAction = true
+                                        )
+                                    }
                                 }
                             )
                         }
@@ -192,11 +205,13 @@ fun PantallaListaWifi(
                                 },
                                 onError = { errorMessage ->
                                     isLoadingNetwork = false
-                                    Toast.makeText(
-                                        context,
-                                        errorMessage,
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = errorMessage,
+                                            duration = SnackbarDuration.Indefinite,
+                                            withDismissAction = true
+                                        )
+                                    }
                                 }
                             )
                         }
