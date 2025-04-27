@@ -338,7 +338,8 @@ fun getGeneralStatus(onResult: (SystemStatus) -> Unit, onError: (String) -> Unit
                 }
             } else {
                 val errorBody = response.errorBody()?.string()
-                onError("Hubo un error en la petición a Eddy: ${response.code()} - ${errorBody ?: "Error desconocido"}")
+                Log.e("ERROR", errorBody.toString())
+                onError("Hubo un error en la petición a Eddy asegurese de estar conectado a la red")
             }
         }
 
