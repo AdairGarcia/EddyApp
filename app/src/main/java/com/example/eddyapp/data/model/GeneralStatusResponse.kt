@@ -10,7 +10,8 @@ data class GeneralStatusResponse(
 data class SystemStatus(
     val connection_mode: String,
     val status: ConnectionStatus,
-    val battery_level: Int
+    val battery_level: Int,
+    val battery_charging: Boolean,
 )
 
 data class ConnectionStatus(

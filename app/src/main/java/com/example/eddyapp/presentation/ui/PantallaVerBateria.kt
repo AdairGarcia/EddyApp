@@ -102,6 +102,7 @@ fun PantallaVerBateria(
             )
             ContenedorBateria(
                 cargaRestante = battery.value.charge,
+                cargando = battery.value.charging,
                 cargaEstado = battery.value.charging,
                 tiempoRestante = battery.value.remaining_time,
                 isLoading = isLoading,
@@ -133,13 +134,14 @@ fun PantallaVerBateria(
 @Composable
 fun ContenedorBateria(
     cargaRestante: Int,
+    cargando: Boolean,
     cargaEstado: Boolean,
     tiempoRestante: Int,
     isLoading: Boolean,
     errorMessage: String?,
     onRefresh: () -> Unit = {}
 ) {
-    val batteryImage = getBatteryImage(cargaRestante)
+    val batteryImage = getBatteryImage(cargaRestante, cargando)
 
     Surface(
         shape = RoundedCornerShape(5.dp),
@@ -218,6 +220,12 @@ fun PantallaVerBateriaPreview(){
 @Preview (showBackground = true)
 @Composable
 fun ContenedorBateriaPreview(){
-    ContenedorBateria(50, false, 30, false, null) {}
+    ContenedorBateria(50,
+        cargando = true,
+        cargaEstado = false,
+        tiempoRestante = 30,
+        isLoading = false,
+        errorMessage = null
+    ) {}
 }
 

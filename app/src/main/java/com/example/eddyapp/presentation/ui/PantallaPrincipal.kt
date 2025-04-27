@@ -72,6 +72,7 @@ fun PantallaPrincipal(
     var networkName by remember { mutableStateOf("") }
     var signalStrength by remember { mutableIntStateOf(0) }
     var batteryLevel by remember { mutableIntStateOf(0) }
+    var charging by remember { mutableStateOf(false) }
 
     fun onRefresh() {
         isLoading = true
@@ -81,6 +82,7 @@ fun PantallaPrincipal(
                 networkName = status.status.name
                 signalStrength = status.status.signal
                 batteryLevel = status.battery_level
+                charging = status.battery_charging
                 errorMessage = null
                 isLoading = false
             },
@@ -155,6 +157,7 @@ fun PantallaPrincipal(
                     networkName = networkName,
                     batteryLevel = R.string.battery_level,
                     batteryModule = batteryLevel,
+                    charging = charging,
                     onRefresh = { onRefresh() },
                     modifier = Modifier,
                     enabled = !isLoading
@@ -303,6 +306,7 @@ fun CenterPrincipal(
     @DrawableRes refresh: Int,
     @StringRes batteryLevel: Int,
     batteryModule: Int,
+    charging: Boolean,
     networkName: String,
     mode: String,
     signalStrength: Int,
@@ -310,7 +314,7 @@ fun CenterPrincipal(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ){
-    val batteryImage = getBatteryImage(batteryModule)
+    val batteryImage = getBatteryImage(batteryModule, charging)
     val modelImage = getSignalImage(mode, signalStrength)
 
     Row (modifier = modifier.padding(25.dp)
@@ -415,13 +419,22 @@ fun OptionBoton(
 }
 
 @Composable
-fun getBatteryImage(batteryLevel: Int): Int {
+fun getBatteryImage(batteryLevel: Int, charging: Boolean): Int {
     return when {
-        batteryLevel >= 75 -> R.drawable.battery_full_solid
-        batteryLevel >= 50 -> R.drawable.battery_three_quarters_solid
-        batteryLevel >= 25 -> R.drawable.battery_half_solid
-        batteryLevel >= 10 -> R.drawable.battery_quarter_solid
-        else -> R.drawable.battery_empty_solid
+        charging -> when {
+            batteryLevel >= 75 -> R.drawable.battery_full_solid_charge
+            batteryLevel >= 50 -> R.drawable.battery_three_quarters_solid_charge
+            batteryLevel >= 25 -> R.drawable.battery_half_solid_charge
+            batteryLevel >= 10 -> R.drawable.battery_quarter_solid_charge
+            else -> R.drawable.battery_empty_solid_charge
+        }
+        else -> when {
+            batteryLevel >= 75 -> R.drawable.battery_full_solid
+            batteryLevel >= 50 -> R.drawable.battery_three_quarters_solid
+            batteryLevel >= 25 -> R.drawable.battery_half_solid
+            batteryLevel >= 10 -> R.drawable.battery_quarter_solid
+            else -> R.drawable.battery_empty_solid
+        }
     }
 }
 
@@ -493,7 +506,8 @@ fun CenterPrincipalPreview() {
         networkName = "El nombre de la red extremadamente largo",
         batteryLevel = R.string.battery_level,
         batteryModule = 50,
+        charging = true,
         onRefresh = { },
-        modifier = Modifier
+        modifier = Modifier,
     )
 }
