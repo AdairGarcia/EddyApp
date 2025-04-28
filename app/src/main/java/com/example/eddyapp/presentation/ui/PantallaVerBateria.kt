@@ -42,9 +42,9 @@ fun PantallaVerBateria(
 
     val battery = remember { mutableStateOf(ClientBatteryResponse(
         status = "unknown",
-        charge = 0,
+        charge = 0.0f,
         charging = false,
-        remaining_time = 0,
+        remaining_time = 0.0f,
         message = null
     )) }
     var errorMessage by remember { mutableStateOf<String?>( null ) }
@@ -67,9 +67,9 @@ fun PantallaVerBateria(
             onError = { error ->
                 battery.value = ClientBatteryResponse(
                     status = "error",
-                    charge = 0,
+                    charge = 0.0f,
                     charging = false,
-                    remaining_time = 0,
+                    remaining_time = 0.0f,
                     message = error
                 )
                 errorMessage = error
@@ -133,15 +133,15 @@ fun PantallaVerBateria(
 
 @Composable
 fun ContenedorBateria(
-    cargaRestante: Int,
+    cargaRestante: Float,
     cargando: Boolean,
     cargaEstado: Boolean,
-    tiempoRestante: Int,
+    tiempoRestante: Float,
     isLoading: Boolean,
     errorMessage: String?,
     onRefresh: () -> Unit = {}
 ) {
-    val batteryImage = getBatteryImage(cargaRestante, cargando)
+    val batteryImage = getBatteryImage(cargaRestante.toInt(), cargando)
 
     Surface(
         shape = RoundedCornerShape(5.dp),
@@ -220,10 +220,10 @@ fun PantallaVerBateriaPreview(){
 @Preview (showBackground = true)
 @Composable
 fun ContenedorBateriaPreview(){
-    ContenedorBateria(50,
+    ContenedorBateria(50.0f,
         cargando = true,
         cargaEstado = false,
-        tiempoRestante = 30,
+        tiempoRestante = 30.0f,
         isLoading = false,
         errorMessage = null
     ) {}

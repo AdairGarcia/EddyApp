@@ -37,7 +37,7 @@ class BatteryCheckWorker(appContext: Context, workerParams: WorkerParameters) :
                 )
             }
 
-            val batteryLevel = status.battery_level
+            val batteryLevel = status.battery_level.toInt()
             val charging = status.battery_charging
 
             Log.d("BatteryCheckWorker", "Nivel Batería: $batteryLevel, Cargando: $charging")

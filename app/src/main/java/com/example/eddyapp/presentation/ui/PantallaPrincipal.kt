@@ -81,7 +81,7 @@ fun PantallaPrincipal(
                 connectionMode = status.connection_mode
                 networkName = status.status.name
                 signalStrength = status.status.signal
-                batteryLevel = status.battery_level
+                batteryLevel = status.battery_level.toInt()
                 charging = status.battery_charging
                 errorMessage = null
                 isLoading = false
