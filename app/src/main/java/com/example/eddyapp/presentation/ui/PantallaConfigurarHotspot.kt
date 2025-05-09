@@ -64,7 +64,9 @@ fun PantallaConfigurarHotspot(
 
     Scaffold(
         topBar = {
-            Header()
+            Header(
+                onBack = { onCancel() },
+            )
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)

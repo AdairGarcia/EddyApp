@@ -92,6 +92,9 @@ fun PantallaListaWifi(
     Scaffold (
         topBar = {
             Header(
+                onBack = {
+                    onSuccess()
+                },
                 onTutorial = {
                     onTutorial()
                 }

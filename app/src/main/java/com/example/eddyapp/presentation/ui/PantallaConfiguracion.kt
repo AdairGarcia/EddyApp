@@ -32,11 +32,15 @@ import com.example.eddyapp.R
 fun PantallaConfiguracion(
     onModificarAPN: () -> Unit,
     onConfigurarHotspot: () -> Unit,
-    onTutorial: () -> Unit
+    onTutorial: () -> Unit,
+    onBack: () -> Unit
 ){
     Scaffold(
         topBar = {
             Header(
+                onBack = {
+                    onBack()
+                },
                 onTutorial = {
                     onTutorial()
                 }
@@ -65,12 +69,12 @@ fun PantallaConfiguracion(
                 function = { onModificarAPN() }
             )
 
-            OptionContainer(
-                icon = R.drawable.cell_tower,
-                description = R.string.hotspot_configuration,
-                color = Color(0xFF663399),
-                function = { onConfigurarHotspot() }
-            )
+//            OptionContainer(
+//                icon = R.drawable.cell_tower,
+//                description = R.string.hotspot_configuration,
+//                color = Color(0xFF663399),
+//                function = { onConfigurarHotspot() }
+//            )
 
         }
     }
@@ -119,7 +123,7 @@ fun OptionContainer(
 @Preview (showBackground = true)
 @Composable
 fun PreviewPantallaConfiguracion(){
-    PantallaConfiguracion({},{},{})
+    PantallaConfiguracion({},{},{},{})
 }
 
 

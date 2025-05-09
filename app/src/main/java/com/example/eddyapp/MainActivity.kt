@@ -199,7 +199,13 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable(Tutorial.route) {
-                PantallasTutorialPrincipal()
+                PantallasTutorialPrincipal(
+                    onBack = {
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
+                    },
+                )
             }
             composable(ConfiguracionAvanzada.route){
                 PantallaConfiguracion(
@@ -211,14 +217,31 @@ class MainActivity : ComponentActivity() {
                     },
                     onTutorial = {
                         navController.navigate(TutorialConfiguracion.route)
+                    },
+                    onBack = {
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
                     }
                 )
             }
             composable(TutorialWifi.route){
-                PantallasTutorialWifi()
+                PantallasTutorialWifi(
+                    onBack = {
+                        navController.navigate(Home.route) {
+                            popUpTo(Home.route) { inclusive = true }
+                        }
+                    }
+                )
             }
             composable(TutorialConfiguracion.route){
-                PantallasTutorialConfiguracion()
+                PantallasTutorialConfiguracion(
+                    onBack = {
+                        navController.navigate(ConfiguracionAvanzada.route) {
+                            popUpTo(ConfiguracionAvanzada.route) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }

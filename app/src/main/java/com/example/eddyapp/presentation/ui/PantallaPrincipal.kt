@@ -112,6 +112,7 @@ fun PantallaPrincipal(
     Scaffold(
         topBar = {
             Header(
+                onBack = { /* No action needed */ },
                 onTutorial = {
                     onTutorial()
                 }

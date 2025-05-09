@@ -76,7 +76,9 @@ fun PantallaVerDispositivos(
 
     Scaffold(
         topBar = {
-            Header()
+            Header(
+                onBack = {onEntendido()}
+            )
         }
     ) {
         padding ->

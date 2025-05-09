@@ -24,17 +24,26 @@ import com.example.eddyapp.R
 
 @Composable
 fun Header(
-    onTutorial: (() -> Unit)? = null
+    onTutorial: (() -> Unit)? = null,
+    onBack: () -> Unit
 ) {
     Row (modifier = Modifier.background(color = Color(0xFFE9EFF2))
         .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Eddy Logo",
-            modifier = Modifier.size(65.dp)
-                .padding(start = 10.dp)
-        )
+        IconButton(
+            onClick = {onBack()},
+            modifier = Modifier.padding(5.dp).size(65.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Image(painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Eddy Logo",
+                    modifier = Modifier.size(65.dp)
+                )
+            }
+        }
         Text(text = stringResource(id = R.string.app_name),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -60,6 +69,7 @@ fun Header(
 
 @Composable
 fun HeaderTutorial(
+    onBack: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -67,13 +77,18 @@ fun HeaderTutorial(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.help),
-            contentDescription = "Help icon",
-            modifier = Modifier
-                .size(65.dp)
-                .padding(start = 10.dp)
-        )
+        IconButton(
+            onClick = {onBack()},
+            modifier = Modifier.padding(5.dp).size(65.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.help),
+                contentDescription = "Help icon",
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(start = 10.dp)
+            )
+        }
         Text(
             text = "Tutorial",
             fontSize = 18.sp,
@@ -87,13 +102,16 @@ fun HeaderTutorial(
 @Preview(showBackground = true)
 @Composable
 fun HeaderTutorialPreview() {
-    HeaderTutorial()
+    HeaderTutorial(
+        onBack = {}
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HeaderPreview() {
     Header(
+        onBack = {},
         onTutorial = {}
     )
 }

@@ -84,7 +84,9 @@ fun PantallaVerBateria(
 
     Scaffold(
         topBar = {
-            Header()
+            Header(
+                onBack = {onEntendido()}
+            )
         },
     ) {
         padding ->
@@ -103,7 +105,6 @@ fun PantallaVerBateria(
             ContenedorBateria(
                 cargaRestante = battery.value.charge,
                 cargando = battery.value.charging,
-                cargaEstado = battery.value.charging,
                 tiempoRestante = battery.value.remaining_time,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
@@ -135,7 +136,6 @@ fun PantallaVerBateria(
 fun ContenedorBateria(
     cargaRestante: Float,
     cargando: Boolean,
-    cargaEstado: Boolean,
     tiempoRestante: Float,
     isLoading: Boolean,
     errorMessage: String?,
@@ -183,7 +183,7 @@ fun ContenedorBateria(
                     )
                 }
                 Text(
-                    text = "Carga restante aproximada: $cargaRestante%",
+                    text = "Carga restante aproximada: ${roundCharge(cargaRestante.toInt())}%",
                     color = Color(0xFFFFFFFF),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
@@ -191,7 +191,7 @@ fun ContenedorBateria(
                 )
                 Text(
                     text = "Cargando: ${(
-                            if(cargaEstado) "Sí" else "No"
+                            if(cargando) "Sí" else "No"
                             )}",
                     color = Color(0xFFFFFFFF),
                     fontSize = 20.sp,
@@ -211,6 +211,18 @@ fun ContenedorBateria(
     }
 }
 
+fun roundCharge(charge: Int): Int {
+    return when {
+        charge >= 100 -> 100
+        charge < 10 -> charge
+        else -> {
+            val remainder = charge % 5
+            if (remainder == 0) charge
+            else charge - remainder
+        }
+    }
+}
+
 @Preview (showBackground = true)
 @Composable
 fun PantallaVerBateriaPreview(){
@@ -222,7 +234,6 @@ fun PantallaVerBateriaPreview(){
 fun ContenedorBateriaPreview(){
     ContenedorBateria(50.0f,
         cargando = true,
-        cargaEstado = false,
         tiempoRestante = 30.0f,
         isLoading = false,
         errorMessage = null

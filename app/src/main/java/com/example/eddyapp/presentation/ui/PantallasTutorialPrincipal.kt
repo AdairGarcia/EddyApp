@@ -35,7 +35,9 @@ import com.example.eddyapp.R
 import kotlinx.coroutines.launch
 
 @Composable
-fun PantallasTutorialPrincipal() {
+fun PantallasTutorialPrincipal(
+    onBack: () -> Unit
+) {
     val outerPagerState = rememberPagerState(pageCount = { 7 })
     val innerPageCounts = listOf(2, 1, 1, 1, 2, 2, 1)
     val innerPagerStates = innerPageCounts.map { rememberPagerState(pageCount = { it }) }
@@ -79,7 +81,9 @@ fun PantallasTutorialPrincipal() {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        HeaderTutorial()
+        HeaderTutorial(
+            onBack = {onBack()}
+        )
         HorizontalPager(
             state = outerPagerState,
             modifier = Modifier.weight(1f)
@@ -193,5 +197,7 @@ fun PantallasTutorialPrincipal() {
 @Preview(showBackground = true)
 @Composable
 fun PantallasTutorialPrincipalPreview() {
-    PantallasTutorialPrincipal()
+    PantallasTutorialPrincipal(
+        onBack = {}
+    )
 }

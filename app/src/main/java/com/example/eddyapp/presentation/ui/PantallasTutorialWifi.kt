@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.example.eddyapp.R
 
 @Composable
-fun PantallasTutorialWifi(){
+fun PantallasTutorialWifi(
+    onBack: () -> Unit
+){
     val outerPagerState = rememberPagerState(pageCount = { 1 })
     val innerPageCounts = listOf(2)
     val innerPagerStates = innerPageCounts.map { rememberPagerState(pageCount = { it }) }
@@ -55,7 +57,9 @@ fun PantallasTutorialWifi(){
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        HeaderTutorial()
+        HeaderTutorial(
+            onBack = {onBack()}
+        )
         HorizontalPager(
             state = outerPagerState,
             modifier = Modifier.weight(1f)
@@ -138,5 +142,7 @@ fun PantallasTutorialWifi(){
 @Preview(showBackground = true)
 @Composable
 fun PantallasTutorialWifiPreview() {
-    PantallasTutorialWifi()
+    PantallasTutorialWifi(
+        onBack = {}
+    )
 }
