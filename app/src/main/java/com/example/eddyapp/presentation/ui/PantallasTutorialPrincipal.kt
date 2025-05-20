@@ -82,7 +82,9 @@ fun PantallasTutorialPrincipal(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         HeaderTutorial(
-            onBack = {onBack()}
+            onBack = {
+                onBack()
+            }
         )
         HorizontalPager(
             state = outerPagerState,
@@ -172,17 +174,28 @@ fun PantallasTutorialPrincipal(
                 Text("Anterior")
             }
 
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        if (outerPagerState.currentPage < outerPagerState.pageCount - 1) {
-                            outerPagerState.animateScrollToPage(outerPagerState.currentPage + 1)
+            if(outerPagerState.currentPage == outerPagerState.pageCount - 1) {
+                Button(
+                    onClick = {
+                        onBack()
+                    },
+                    enabled = true
+                ) {
+                    Text("Finalizar")
+                }
+            } else {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            if (outerPagerState.currentPage < outerPagerState.pageCount - 1) {
+                                outerPagerState.animateScrollToPage(outerPagerState.currentPage + 1)
+                            }
                         }
-                    }
-                },
-                enabled = outerPagerState.currentPage < outerPagerState.pageCount - 1
-            ) {
-                Text("Siguiente")
+                    },
+                    enabled = outerPagerState.currentPage < outerPagerState.pageCount - 1
+                ) {
+                    Text("Siguiente")
+                }
             }
         }
         Text(

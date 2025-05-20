@@ -27,4 +27,8 @@
     <string name="available_networks">Redes disponibles</string>
     <string name="devices_found">Dispositivos encontrados</string>
 
+    <string name="welcome_message_title">Bienvenido a EddyApp</string>
+    <string name="welcome_message_subtitle">Controla, configura y monitorea tu módulo Eddy</string>
+    <string name="welcome_btn_continue">Continuar</string>
+
 </resources>

@@ -26,6 +26,7 @@ import com.example.eddyapp.presentation.navigation.TutorialConfiguracion
 import com.example.eddyapp.presentation.navigation.TutorialWifi
 import com.example.eddyapp.presentation.navigation.VerBateria
 import com.example.eddyapp.presentation.navigation.VerDispositivos
+import com.example.eddyapp.presentation.ui.PantallaBienvenida
 import com.example.eddyapp.presentation.ui.PantallaConfiguracion
 import com.example.eddyapp.presentation.ui.PantallaConfigurarHotspot
 import com.example.eddyapp.presentation.ui.PantallaListaWifi
@@ -38,10 +39,12 @@ import com.example.eddyapp.presentation.ui.PantallasTutorialConfiguracion
 import com.example.eddyapp.presentation.ui.PantallasTutorialPrincipal
 import com.example.eddyapp.presentation.ui.PantallasTutorialWifi
 import com.example.eddyapp.utils.BatteryCheckWorker
+import com.example.eddyapp.utils.UserPreferences
 import java.util.concurrent.TimeUnit
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var preferences: UserPreferences
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -56,13 +59,28 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        preferences = UserPreferences(this)
         askNotificationPermission()
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             startBatteryCheckWorker()
         }
         setContent {
-            Navegation()
+            if(preferences.firstTimeLaunch()) {
+                PantallaBienvenida(
+                    onComplete = {
+                        preferences.markWelcomeScreenCompleted()
+                        setContent { Navegation(
+                            startDestionation = Tutorial.route
+                        ) }
+                    }
+                )
+            } else {
+                Navegation(
+                    startDestionation = Home.route
+                )
+            }
         }
     }
 
@@ -83,26 +101,24 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startBatteryCheckWorker() {
-        // Configura la tarea periódica (ej. cada 15 minutos, mínimo intervalo permitido)
         val batteryCheckRequest = PeriodicWorkRequestBuilder<BatteryCheckWorker>(
-            15, TimeUnit.MINUTES // Intervalo de repetición
+            15, TimeUnit.MINUTES
         )
-            // Puedes añadir restricciones aquí si es necesario (ej. requiere red)
-            // .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
             .build()
 
-        // Encola el trabajo periódico asegurándote de que solo haya una instancia activa
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            "batteryCheckWork", // Nombre único para este trabajo
-            ExistingPeriodicWorkPolicy.KEEP, // Mantiene el trabajo existente si ya está encolado
+            "batteryCheckWork",
+            ExistingPeriodicWorkPolicy.KEEP,
             batteryCheckRequest
         )
     }
 
     @Composable
-    fun Navegation(){
+    fun Navegation(
+        startDestionation: String = Home.route
+    ){
         val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = Home.route){
+        NavHost(navController = navController, startDestination = startDestionation) {
             composable(Home.route){
                 PantallaPrincipal(
                     onCambiarRedWifi = {

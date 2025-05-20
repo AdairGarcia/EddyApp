@@ -63,6 +63,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.ui.test.junit4.android)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
